@@ -1,0 +1,60 @@
+name: Lint and Unit Test
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    name: Lint
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setting JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'oracle'
+          java-version: 17.0.12
+
+      - name: Gradle Cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Lint
+        run: ./gradlew ktlintCheck
+
+  unit-test:
+    needs: lint
+    runs-on: ubuntu-latest
+    name: Unit Test
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setting JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'oracle'
+          java-version: 17.0.12
+
+      - name: Gradle Cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Unit Test
+        run: ./gradlew test
