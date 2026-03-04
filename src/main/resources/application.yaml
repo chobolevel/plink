@@ -1,0 +1,63 @@
+spring:
+  application:
+    name: plink
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/musinsa
+    username: root
+    password: rkddlswo218@
+  jpa:
+    database: mysql
+    open-in-view: false
+    databse-platform: org.hibernate.dialect.MySQLDialect
+    properties:
+      hibernate.id.new_generator_mappings: false
+      hibernate.implicit_naming_strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+      hibernate.physical_naming_strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
+      hibernate.globally_quoted_identifiers: true
+      hibernate.globally_quoted_identifiers_skip_column_definitions: true
+      hibernate.default_batch_fetch_size: 1000
+      org:
+        hibernate:
+          envers:
+            revision_field_name: revision_id
+            revision_type_field_name: revision_type
+            audit_table_suffix: _histories
+            store_data_at_delete: true
+      hibernate:
+        show_sql: true
+    generate-ddl: false
+    hibernate:
+      ddl-auto: validate
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+
+redis:
+  plink:
+    host: localhost
+    port: 6379
+    password:
+
+# JWT
+jwt:
+  issuer: chobolevel
+  secret: chobolevel-plink
+  cache-key: "user-refresh-token:v1"
+
+# AWS
+cloud:
+  aws:
+    s3:
+      bucket: "chobolevel"
+      imageHost: "https://chobolevel.s3.ap-northeast-2.amazonaws.com"
+    stack.auto: false
+    region.static: "ap-northeast-2"
+    credentials:
+      accessKey: ENC(blTqjMv4m+ol+A/QmRP4hdyAjpbI0P69FMo3AbHuxBJ2tsmvK/cBGtjkAPCbsGny0piielpoDa0ulZ70uxWsFg==)
+      secretKey: ENC(IpVUABgJ3EV6UKPJa31bimLDROuoeJHqqjvqfZmFAy8id0ItkQMRFvo9w7IwQt67eOcuR73PEDKt7uXFYCZmQhEVQ8CVxrZlPEi+njRnkRE=)
+
+# actuator
+management:
+  endpoint:
+    health:
+      show-details: always
