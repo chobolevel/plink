@@ -3,3 +3,4 @@ plugins {
 }
 rootProject.name = "plink"
 include("core")
+include("user")
