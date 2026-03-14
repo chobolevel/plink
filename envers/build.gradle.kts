@@ -7,6 +7,6 @@ plugins {
 }
 
 dependencies {
+    api("org.springframework.data:spring-data-envers")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("org.springframework.data:spring-data-envers")
 }
