@@ -9,7 +9,7 @@ plugins {
 
 dependencies {
     api(project(":core"))
-    implementation(project(":jpa-envers"))
+    implementation(project(":jpa"))
     implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.springframework.boot:spring-boot-starter-validation")
 

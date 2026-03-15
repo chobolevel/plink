@@ -3,6 +3,6 @@ plugins {
 }
 rootProject.name = "plink"
 include("core")
+include("jpa")
 include("user")
 include("api")
-include("jpa-envers")
