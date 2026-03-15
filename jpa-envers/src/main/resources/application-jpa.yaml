@@ -2,7 +2,7 @@ spring:
   jpa:
     database: mysql
     open-in-view: false
-    databse-platform: org.hibernate.dialect.MySQLDialect
+    database-platform: org.hibernate.dialect.MySQLDialect
     properties:
       hibernate.id.new_generator_mappings: false
       hibernate.implicit_naming_strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
