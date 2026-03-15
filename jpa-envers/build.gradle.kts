@@ -8,17 +8,13 @@ plugins {
 }
 
 dependencies {
-    api(project(":core"))
-    implementation(project(":jpa-envers"))
-    implementation("org.springframework.boot:spring-boot-starter")
-    implementation("org.springframework.boot:spring-boot-starter-validation")
+    api("org.springframework.data:spring-data-envers")
+    api("org.springframework.boot:spring-boot-starter-data-jpa")
 
     // query dsl
     val queryDslVersion = "5.0.0"
     implementation("com.querydsl:querydsl-jpa:$queryDslVersion:jakarta")
     kapt("com.querydsl:querydsl-apt:$queryDslVersion:jakarta")
-
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
 allOpen {

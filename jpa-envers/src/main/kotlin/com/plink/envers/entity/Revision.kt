@@ -1,4 +1,4 @@
-package com.plink.envers
+package com.plink.envers.entity
 
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue

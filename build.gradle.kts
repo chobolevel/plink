@@ -5,12 +5,13 @@ plugins {
     val springBootVersion = "3.5.5"
     val springDependencyManagementVersion = "1.1.7"
     val ktlintVersion = "11.3.1"
-    id("org.springframework.boot") version springBootVersion apply false
-    id("io.spring.dependency-management") version springDependencyManagementVersion apply false
-    id("org.jlleitschuh.gradle.ktlint") version ktlintVersion apply false
     kotlin("jvm") version kotlinVersion apply false
     kotlin("plugin.jpa") version kotlinVersion apply false
     kotlin("plugin.spring") version kotlinVersion apply false
+    kotlin("kapt") version kotlinVersion apply false
+    id("org.springframework.boot") version springBootVersion apply false
+    id("io.spring.dependency-management") version springDependencyManagementVersion apply false
+    id("org.jlleitschuh.gradle.ktlint") version ktlintVersion apply false
     // apply false = 루트에서 플러그인 선언만 하고 실제 적용은 서브 모듈의 build.gradle.kts에서 결정
 }
 

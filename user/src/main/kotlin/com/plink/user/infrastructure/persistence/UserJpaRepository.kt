@@ -1,0 +1,12 @@
+package com.plink.user.infrastructure.persistence
+
+import com.plink.user.domain.model.User
+import com.plink.user.domain.model.UserSignUpType
+import org.springframework.data.jpa.repository.JpaRepository
+
+interface UserJpaRepository : JpaRepository<User, String> {
+
+    fun findByIdAndIsResignedFalse(id: String): User?
+
+    fun findByEmailAndSignUpTypeAndIsResignedFalse(email: String, signUpType: UserSignUpType): User?
+}

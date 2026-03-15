@@ -5,4 +5,4 @@ rootProject.name = "plink"
 include("core")
 include("user")
 include("api")
-include("envers")
+include("jpa-envers")

@@ -1,0 +1,24 @@
+spring:
+  jpa:
+    database: mysql
+    open-in-view: false
+    databse-platform: org.hibernate.dialect.MySQLDialect
+    properties:
+      hibernate.id.new_generator_mappings: false
+      hibernate.implicit_naming_strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+      hibernate.physical_naming_strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
+      hibernate.globally_quoted_identifiers: true
+      hibernate.globally_quoted_identifiers_skip_column_definitions: true
+      hibernate.default_batch_fetch_size: 1000
+      org:
+        hibernate:
+          envers:
+            revision_field_name: revision_id
+            revision_type_field_name: revision_type
+            audit_table_suffix: _histories
+            store_data_at_delete: true
+      hibernate:
+        show_sql: true
+    generate-ddl: false
+    hibernate:
+      ddl-auto: validate

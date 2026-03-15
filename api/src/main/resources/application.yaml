@@ -1,8 +1,13 @@
 spring:
   application:
     name: plink
+  profiles:
+    include:
+      - jpa
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/plink
     username: root
     password: rkddlswo218@
+  jackson:
+    property-naming-strategy: SNAKE_CASE
