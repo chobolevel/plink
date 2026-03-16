@@ -6,8 +6,8 @@ spring:
       - optional:classpath:/application-core.yaml
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/plink
-    username: root
-    password: rkddlswo218@
+    url: ENC(V49bXHmsc1mecbDHysu8BfU4pTMBC6uOpO5Mx0iaNWvk7wyRM8IvBvQPKngJ/QDj)
+    username: ENC(+LbUdM972QX9ispmT9le4g==)
+    password: ENC(OKJwTXnsJjoHaG+74p+6iIalEz0fiunH)
   jackson:
     property-naming-strategy: SNAKE_CASE
