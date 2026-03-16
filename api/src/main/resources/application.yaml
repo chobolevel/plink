@@ -1,9 +1,9 @@
 spring:
   application:
     name: plink
-  profiles:
-    include:
-      - jpa
+  config:
+    import:
+      - optional:classpath:/application-jpa.yaml
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/plink
