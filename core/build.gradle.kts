@@ -11,6 +11,7 @@ dependencies {
     api("org.springframework.data:spring-data-envers")
     api("org.springframework.boot:spring-boot-starter-data-jpa")
     api("org.springframework.boot:spring-boot-starter-validation")
+    api("com.github.f4b6a3:tsid-creator:5.2.6")
 
     // query dsl
     val queryDslVersion = "5.0.0"

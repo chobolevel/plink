@@ -1,6 +1,7 @@
 package com.plink.user.domain.model
 
 import com.plink.core.entity.BaseEntity
+import com.plink.core.generator.TsidGenerator
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
@@ -11,7 +12,6 @@ import jakarta.persistence.Table
 import jakarta.persistence.UniqueConstraint
 import org.hibernate.annotations.ColumnDefault
 import org.hibernate.annotations.Comment
-import org.hibernate.annotations.UuidGenerator
 import org.hibernate.envers.Audited
 
 @Entity
@@ -66,8 +66,8 @@ class User(
 ) : BaseEntity() {
 
     @Id
-    @UuidGenerator(style = UuidGenerator.Style.TIME)
-    @Column(name = "id", length = 100, nullable = false)
+    @TsidGenerator
+    @Column(name = "id", length = 13, nullable = false)
     @Comment("아이디")
     var id: String? = null
 
