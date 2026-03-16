@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories
 import java.time.OffsetDateTime
 import java.util.Optional
 
+// api 모듈에서 직접 의존하지 않지만 런타임에 해당 설정이 적용됨
 @Configuration
 @EnableJpaAuditing(dateTimeProviderRef = "auditingDateTimeProvider")
 @EnableJpaRepositories(basePackages = ["com.plink"])

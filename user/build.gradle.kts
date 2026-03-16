@@ -11,7 +11,6 @@ dependencies {
     api(project(":core"))
     implementation(project(":jpa"))
     implementation("org.springframework.boot:spring-boot-starter")
-    implementation("org.springframework.boot:spring-boot-starter-validation")
 
     // query dsl
     val queryDslVersion = "5.0.0"
