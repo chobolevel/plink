@@ -1,4 +1,4 @@
-package com.plink.jpa.entity
+package com.plink.core.entity
 
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue

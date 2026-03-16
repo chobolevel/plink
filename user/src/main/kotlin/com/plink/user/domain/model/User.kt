@@ -1,6 +1,6 @@
 package com.plink.user.domain.model
 
-import com.plink.jpa.entity.BaseEntity
+import com.plink.core.entity.BaseEntity
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType

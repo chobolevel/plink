@@ -9,12 +9,10 @@ plugins {
 
 dependencies {
     api(project(":core"))
-    implementation(project(":jpa"))
     implementation("org.springframework.boot:spring-boot-starter")
 
     // query dsl
     val queryDslVersion = "5.0.0"
-    implementation("com.querydsl:querydsl-jpa:$queryDslVersion:jakarta")
     kapt("com.querydsl:querydsl-apt:$queryDslVersion:jakarta")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
