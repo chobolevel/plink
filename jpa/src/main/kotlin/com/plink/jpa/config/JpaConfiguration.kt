@@ -1,4 +1,4 @@
-package com.plink.envers.config
+package com.plink.jpa.config
 
 import org.springframework.boot.autoconfigure.domain.EntityScan
 import org.springframework.context.annotation.Bean
