@@ -19,8 +19,14 @@ class UserQueryDslRepository : QuerydslRepositorySupport(User::class.java) {
         return from(user)
             .where(*booleanExpressions)
             .orderBy(*orderSpecifiers)
-            .offset(paging.page)
+            .offset(paging.offset)
             .limit(paging.limit)
             .fetch()
+    }
+
+    fun searchUsersCount(booleanExpressions: Array<BooleanExpression>): Long {
+        return from(user)
+            .where(*booleanExpressions)
+            .fetchCount()
     }
 }
