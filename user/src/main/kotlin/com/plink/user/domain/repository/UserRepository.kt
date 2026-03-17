@@ -9,6 +9,8 @@ interface UserRepository {
 
     fun save(user: User): User
 
+    fun findById(id: String): User
+
     fun searchUsers(
         queryFilter: UserQueryFilter,
         paging: Paging,

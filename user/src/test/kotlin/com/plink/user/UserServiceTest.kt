@@ -2,6 +2,8 @@ package com.plink.user
 
 import com.plink.core.dto.ApiPagingResponse
 import com.plink.core.dto.Paging
+import com.plink.core.exception.DataNotFoundException
+import com.plink.core.exception.ErrorCode
 import com.plink.user.application.UserService
 import com.plink.user.application.dto.CreateUserRequest
 import com.plink.user.application.dto.UserResponse
@@ -11,6 +13,7 @@ import com.plink.user.domain.repository.UserRepository
 import com.plink.user.domain.service.UserConverter
 import com.plink.user.infrastructure.persistence.UserQueryFilter
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -38,7 +41,7 @@ class UserServiceTest {
     private lateinit var userService: UserService
 
     @Test
-    fun createUserTest() {
+    fun `회원 생성`() {
         // given
         val request: CreateUserRequest = DummyUser.toCreateRequest()
         `when`(userConverter.toEntity(request = request)).thenReturn(dummyUser)
@@ -52,7 +55,7 @@ class UserServiceTest {
     }
 
     @Test
-    fun getUsersTest() {
+    fun `회원 목록 조회`() {
         // given
         val dummyUsers: List<User> = listOf(dummyUser)
         val dummyUserResponses: List<UserResponse> = listOf(dummyUserResponse)
@@ -90,5 +93,36 @@ class UserServiceTest {
         assertThat(result.size).isEqualTo(paging.size)
         assertThat(result.data).isEqualTo(dummyUserResponses)
         assertThat(result.totalCount).isEqualTo(dummyUserResponses.size.toLong())
+    }
+
+    @Test
+    fun `회원 조회`() {
+        // given
+        val dummyUserId: String = dummyUser.id!!
+        `when`(userRepository.findById(id = dummyUserId)).thenReturn(dummyUser)
+        `when`(userConverter.toResponse(user = dummyUser)).thenReturn(dummyUserResponse)
+
+        // when
+        val result: UserResponse = userService.getUser(id = dummyUserId)
+
+        // then
+        assertThat(result).isEqualTo(dummyUserResponse)
+    }
+
+    @Test
+    fun `존재하지 않는 유저 조회 시 예외 발생`() {
+        // given
+        val invalidUserId = "invalid-user-id"
+        `when`(userRepository.findById(id = invalidUserId)).thenThrow(
+            DataNotFoundException(
+                code = ErrorCode.USER_NOT_FOUND,
+                message = ErrorCode.USER_NOT_FOUND.koreanMessage
+            )
+        )
+
+        // when & then
+        assertThatThrownBy { userService.getUser(id = invalidUserId) }
+            .isInstanceOf(DataNotFoundException::class.java)
+            .hasMessage(ErrorCode.USER_NOT_FOUND.koreanMessage)
     }
 }

@@ -3,6 +3,7 @@ package com.plink.user.application
 import com.plink.core.dto.ApiPagingResponse
 import com.plink.core.dto.Paging
 import com.plink.user.application.dto.CreateUserRequest
+import com.plink.user.application.dto.UserResponse
 import com.plink.user.domain.model.User
 import com.plink.user.domain.model.UserOrderType
 import com.plink.user.domain.repository.UserRepository
@@ -21,6 +22,12 @@ class UserService(
     fun createUser(request: CreateUserRequest): String {
         val baseUser: User = userConverter.toEntity(request = request)
         return userRepository.save(user = baseUser).id!!
+    }
+
+    @Transactional(readOnly = true)
+    fun getUser(id: String): UserResponse {
+        val user = userRepository.findById(id)
+        return userConverter.toResponse(user)
     }
 
     @Transactional(readOnly = true)

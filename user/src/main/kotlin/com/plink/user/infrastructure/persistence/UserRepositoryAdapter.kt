@@ -1,6 +1,8 @@
 package com.plink.user.infrastructure.persistence
 
 import com.plink.core.dto.Paging
+import com.plink.core.exception.DataNotFoundException
+import com.plink.core.exception.ErrorCode
 import com.plink.user.domain.model.QUser.user
 import com.plink.user.domain.model.User
 import com.plink.user.domain.model.UserOrderType
@@ -16,6 +18,13 @@ class UserRepositoryAdapter(
 
     override fun save(user: User): User {
         return userJpaRepository.save(user)
+    }
+
+    override fun findById(id: String): User {
+        return userJpaRepository.findByIdAndIsResignedFalse(id) ?: throw DataNotFoundException(
+            code = ErrorCode.USER_NOT_FOUND,
+            message = ErrorCode.USER_NOT_FOUND.koreanMessage
+        )
     }
 
     override fun searchUsers(
