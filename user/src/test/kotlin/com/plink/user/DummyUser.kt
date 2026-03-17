@@ -1,10 +1,12 @@
 package com.plink.user
 
 import com.plink.user.application.dto.CreateUserRequest
+import com.plink.user.application.dto.UpdateUserRequest
 import com.plink.user.application.dto.UserResponse
 import com.plink.user.domain.model.User
 import com.plink.user.domain.model.UserRoleType
 import com.plink.user.domain.model.UserSignUpType
+import com.plink.user.domain.model.UserUpdateMask
 
 object DummyUser {
     private const val id: String = "test-user-id"
@@ -51,9 +53,18 @@ object DummyUser {
         )
     }
 
+    private val dummyUpdateRequest: UpdateUserRequest by lazy {
+        UpdateUserRequest(
+            nickname = "chobo",
+            updateMask = listOf(UserUpdateMask.NICKNAME)
+        )
+    }
+
     fun toEntity(): User = dummyUser
 
     fun toResponse(): UserResponse = dummyUserResponse
 
     fun toCreateRequest(): CreateUserRequest = dummyCreateRequest
+
+    fun toUpdateRequest(): UpdateUserRequest = dummyUpdateRequest
 }

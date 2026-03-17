@@ -7,11 +7,13 @@ import com.plink.core.dto.PagingRequest
 import com.plink.user.application.UserService
 import com.plink.user.application.dto.CreateUserRequest
 import com.plink.user.application.dto.SearchUserRequest
+import com.plink.user.application.dto.UpdateUserRequest
 import com.plink.user.application.dto.UserResponse
 import com.plink.user.infrastructure.persistence.UserQueryFilter
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -60,6 +62,16 @@ class UserController(
     @GetMapping("/users/{userId}")
     fun getUser(@PathVariable userId: String): ResponseEntity<ApiResponse> {
         val result: UserResponse = userService.getUser(id = userId)
+        return ResponseEntity.ok(ApiResponse.of(data = result))
+    }
+
+    @PatchMapping("/users/{userId}")
+    fun updateUser(
+        @PathVariable userId: String,
+        @Valid @RequestBody
+        request: UpdateUserRequest
+    ): ResponseEntity<ApiResponse> {
+        val result: String = userService.updateUser(userId = userId, request = request)
         return ResponseEntity.ok(ApiResponse.of(data = result))
     }
 }

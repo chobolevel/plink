@@ -3,11 +3,13 @@ package com.plink.user.application
 import com.plink.core.dto.ApiPagingResponse
 import com.plink.core.dto.Paging
 import com.plink.user.application.dto.CreateUserRequest
+import com.plink.user.application.dto.UpdateUserRequest
 import com.plink.user.application.dto.UserResponse
 import com.plink.user.domain.model.User
 import com.plink.user.domain.model.UserOrderType
 import com.plink.user.domain.repository.UserRepository
 import com.plink.user.domain.service.UserConverter
+import com.plink.user.domain.service.UserUpdater
 import com.plink.user.infrastructure.persistence.UserQueryFilter
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -15,7 +17,8 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class UserService(
     private val userRepository: UserRepository,
-    private val userConverter: UserConverter
+    private val userConverter: UserConverter,
+    private val userUpdater: UserUpdater
 ) {
 
     @Transactional
@@ -48,5 +51,15 @@ class UserService(
             page = paging.page,
             size = paging.size,
         )
+    }
+
+    @Transactional
+    fun updateUser(userId: String, request: UpdateUserRequest): String {
+        val user: User = userRepository.findById(id = userId)
+        userUpdater.markAsUpdate(
+            request = request,
+            user = user
+        )
+        return userId
     }
 }

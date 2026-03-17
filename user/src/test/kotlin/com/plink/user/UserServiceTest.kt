@@ -6,11 +6,13 @@ import com.plink.core.exception.DataNotFoundException
 import com.plink.core.exception.ErrorCode
 import com.plink.user.application.UserService
 import com.plink.user.application.dto.CreateUserRequest
+import com.plink.user.application.dto.UpdateUserRequest
 import com.plink.user.application.dto.UserResponse
 import com.plink.user.domain.model.User
 import com.plink.user.domain.model.UserOrderType
 import com.plink.user.domain.repository.UserRepository
 import com.plink.user.domain.service.UserConverter
+import com.plink.user.domain.service.UserUpdater
 import com.plink.user.infrastructure.persistence.UserQueryFilter
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
@@ -35,6 +37,9 @@ class UserServiceTest {
 
     @Mock
     private lateinit var userConverter: UserConverter
+
+    @Mock
+    private lateinit var userUpdater: UserUpdater
 
     @InjectMocks
     private lateinit var userService: UserService
@@ -121,6 +126,47 @@ class UserServiceTest {
 
         // when & then
         assertThatThrownBy { userService.getUser(id = invalidUserId) }
+            .isInstanceOf(DataNotFoundException::class.java)
+            .hasMessage(ErrorCode.USER_NOT_FOUND.koreanMessage)
+    }
+
+    @Test
+    fun `회원 정보 수정`() {
+        // given
+        val dummyUserId: String = dummyUser.id!!
+        val request: UpdateUserRequest = DummyUser.toUpdateRequest()
+        `when`(userRepository.findById(id = dummyUserId)).thenReturn(dummyUser)
+        `when`(
+            userUpdater.markAsUpdate(
+                request = request,
+                user = dummyUser,
+            )
+        ).thenReturn(dummyUser)
+
+        // when
+        val result: String = userService.updateUser(
+            userId = dummyUserId,
+            request = request
+        )
+
+        // then
+        assertThat(result).isEqualTo(dummyUserId)
+    }
+
+    @Test
+    fun `회원 정보 수정 시 존재하지 않는 회원 예외 발생`() {
+        // given
+        val invalidUserId = "invalid-user-id"
+        val request: UpdateUserRequest = DummyUser.toUpdateRequest()
+        `when`(userRepository.findById(id = invalidUserId)).thenThrow(
+            DataNotFoundException(
+                code = ErrorCode.USER_NOT_FOUND,
+                message = ErrorCode.USER_NOT_FOUND.koreanMessage
+            )
+        )
+
+        // when & then
+        assertThatThrownBy { userService.updateUser(userId = invalidUserId, request = request) }
             .isInstanceOf(DataNotFoundException::class.java)
             .hasMessage(ErrorCode.USER_NOT_FOUND.koreanMessage)
     }
