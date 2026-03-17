@@ -21,7 +21,6 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.junit.jupiter.MockitoExtension
-import org.springframework.aot.hint.TypeReference.listOf
 
 @DisplayName("UserService unit test")
 @ExtendWith(MockitoExtension::class)
