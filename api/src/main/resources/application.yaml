@@ -11,3 +11,9 @@ spring:
     password: ENC(OKJwTXnsJjoHaG+74p+6iIalEz0fiunH)
   jackson:
     property-naming-strategy: SNAKE_CASE
+
+# JWT
+jwt:
+  issuer: chobolevel
+  secret: chobolevel-plink
+  cache-key: "user-refresh-token:v1"
