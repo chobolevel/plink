@@ -28,6 +28,8 @@ import org.mockito.junit.jupiter.MockitoExtension
 @ExtendWith(MockitoExtension::class)
 class UserServiceTest {
 
+    private val invalidUserId: String = "invalid-user-id"
+
     private val dummyUser: User = DummyUser.toEntity()
 
     private val dummyUserResponse = DummyUser.toResponse()
@@ -116,7 +118,6 @@ class UserServiceTest {
     @Test
     fun `존재하지 않는 유저 조회 시 예외 발생`() {
         // given
-        val invalidUserId = "invalid-user-id"
         `when`(userRepository.findById(id = invalidUserId)).thenThrow(
             DataNotFoundException(
                 code = ErrorCode.USER_NOT_FOUND,
@@ -156,7 +157,6 @@ class UserServiceTest {
     @Test
     fun `회원 정보 수정 시 존재하지 않는 회원 예외 발생`() {
         // given
-        val invalidUserId = "invalid-user-id"
         val request: UpdateUserRequest = DummyUser.toUpdateRequest()
         `when`(userRepository.findById(id = invalidUserId)).thenThrow(
             DataNotFoundException(
@@ -167,6 +167,35 @@ class UserServiceTest {
 
         // when & then
         assertThatThrownBy { userService.updateUser(userId = invalidUserId, request = request) }
+            .isInstanceOf(DataNotFoundException::class.java)
+            .hasMessage(ErrorCode.USER_NOT_FOUND.koreanMessage)
+    }
+
+    @Test
+    fun `회원 탈퇴`() {
+        // given
+        val dummyUserId: String = dummyUser.id!!
+        `when`(userRepository.findById(id = dummyUserId)).thenReturn(dummyUser)
+
+        // when
+        val result: String = userService.resignUser(userId = dummyUserId)
+
+        // then
+        assertThat(result).isEqualTo(dummyUserId)
+    }
+
+    @Test
+    fun `회원 탈퇴 시 존재하지 않는 회원 예외 발생`() {
+        // given
+        `when`(userRepository.findById(id = invalidUserId)).thenThrow(
+            DataNotFoundException(
+                code = ErrorCode.USER_NOT_FOUND,
+                message = ErrorCode.USER_NOT_FOUND.koreanMessage
+            )
+        )
+
+        // when & then
+        assertThatThrownBy { userService.resignUser(userId = invalidUserId) }
             .isInstanceOf(DataNotFoundException::class.java)
             .hasMessage(ErrorCode.USER_NOT_FOUND.koreanMessage)
     }

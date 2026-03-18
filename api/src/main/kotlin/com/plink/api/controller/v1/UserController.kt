@@ -1,5 +1,6 @@
 package com.plink.api.controller.v1
 
+import com.plink.api.annotation.UserAuthorize
 import com.plink.core.dto.ApiPagingResponse
 import com.plink.core.dto.ApiResponse
 import com.plink.core.dto.Paging
@@ -12,6 +13,7 @@ import com.plink.user.application.dto.UserResponse
 import com.plink.user.infrastructure.persistence.UserQueryFilter
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -32,6 +34,15 @@ class UserController(
         request: CreateUserRequest
     ): ResponseEntity<ApiResponse> {
         val result: String = userService.createUser(request = request)
+        return ResponseEntity.ok(ApiResponse.of(data = result))
+    }
+
+    @UserAuthorize
+    @GetMapping("/users/{userId}")
+    fun getUser(
+        @PathVariable userId: String
+    ): ResponseEntity<ApiResponse> {
+        val result: UserResponse = userService.getUser(id = userId)
         return ResponseEntity.ok(ApiResponse.of(data = result))
     }
 
@@ -59,12 +70,7 @@ class UserController(
         return ResponseEntity.ok(result)
     }
 
-    @GetMapping("/users/{userId}")
-    fun getUser(@PathVariable userId: String): ResponseEntity<ApiResponse> {
-        val result: UserResponse = userService.getUser(id = userId)
-        return ResponseEntity.ok(ApiResponse.of(data = result))
-    }
-
+    @UserAuthorize
     @PatchMapping("/users/{userId}")
     fun updateUser(
         @PathVariable userId: String,
@@ -72,6 +78,15 @@ class UserController(
         request: UpdateUserRequest
     ): ResponseEntity<ApiResponse> {
         val result: String = userService.updateUser(userId = userId, request = request)
+        return ResponseEntity.ok(ApiResponse.of(data = result))
+    }
+
+    @UserAuthorize
+    @DeleteMapping("/users/{userId}")
+    fun resignUser(
+        @PathVariable userId: String
+    ): ResponseEntity<ApiResponse> {
+        val result: String = userService.resignUser(userId = userId)
         return ResponseEntity.ok(ApiResponse.of(data = result))
     }
 }

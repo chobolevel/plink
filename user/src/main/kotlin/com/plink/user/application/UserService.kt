@@ -62,4 +62,11 @@ class UserService(
         )
         return userId
     }
+
+    @Transactional
+    fun resignUser(userId: String): String {
+        val user = userRepository.findById(id = userId)
+        user.resign()
+        return userId
+    }
 }
