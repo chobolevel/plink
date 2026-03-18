@@ -28,8 +28,8 @@ class UserService(
     }
 
     @Transactional(readOnly = true)
-    fun getUser(id: String): UserResponse {
-        val user = userRepository.findById(id)
+    fun getUser(userId: String): UserResponse {
+        val user = userRepository.findById(id = userId)
         return userConverter.toResponse(user)
     }
 
