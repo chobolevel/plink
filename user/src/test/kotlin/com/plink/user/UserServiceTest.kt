@@ -109,7 +109,7 @@ class UserServiceTest {
         `when`(userConverter.toResponse(user = dummyUser)).thenReturn(dummyUserResponse)
 
         // when
-        val result: UserResponse = userService.getUser(id = dummyUserId)
+        val result: UserResponse = userService.getUser(userId = dummyUserId)
 
         // then
         assertThat(result).isEqualTo(dummyUserResponse)
@@ -126,7 +126,7 @@ class UserServiceTest {
         )
 
         // when & then
-        assertThatThrownBy { userService.getUser(id = invalidUserId) }
+        assertThatThrownBy { userService.getUser(userId = invalidUserId) }
             .isInstanceOf(DataNotFoundException::class.java)
             .hasMessage(ErrorCode.USER_NOT_FOUND.koreanMessage)
     }
