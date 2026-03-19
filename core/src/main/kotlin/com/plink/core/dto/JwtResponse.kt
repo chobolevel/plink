@@ -1,4 +1,4 @@
-package com.plink.api.dto
+package com.plink.core.dto
 
 data class JwtResponse(
     val accessToken: String,

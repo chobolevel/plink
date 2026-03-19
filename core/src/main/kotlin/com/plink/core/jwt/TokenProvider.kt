@@ -1,13 +1,9 @@
-package com.plink.api.provider
+package com.plink.core.jwt
 
-import com.plink.api.dto.JwtResponse
-import com.plink.api.properties.JwtProperties
-import com.plink.core.exception.ErrorCode
-import com.plink.core.exception.UnAuthorizedException
+import com.plink.core.dto.JwtResponse
+import com.plink.core.properties.JwtProperties
 import io.jsonwebtoken.Claims
-import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.Header
-import io.jsonwebtoken.JwtException
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import org.springframework.stereotype.Component
@@ -19,17 +15,17 @@ class TokenProvider(
     private val jwtProperties: JwtProperties,
 ) {
 
-    fun generateToken(id: Long): JwtResponse {
+    fun generateToken(userId: String): JwtResponse {
         val now = Date()
         val accessTokenExpiredAt = Date(now.time + TimeUnit.MINUTES.toMillis(30))
         val refreshTokenExpiredAt = Date(now.time + TimeUnit.DAYS.toMillis(7))
         val accessToken: String = generateJwtToken(
-            subject = id.toString(),
+            subject = userId,
             issuedAt = now,
             expiredAt = accessTokenExpiredAt,
         )
         val refreshToken: String = generateJwtToken(
-            subject = id.toString(),
+            subject = userId,
             issuedAt = now,
             expiredAt = refreshTokenExpiredAt,
         )
@@ -52,7 +48,7 @@ class TokenProvider(
             .compact()
     }
 
-    fun getId(token: String): String {
+    fun getUserId(token: String): String {
         val claims: Claims = Jwts.parser()
             .setSigningKey(jwtProperties.secret)
             .parseClaimsJws(token)
@@ -61,21 +57,13 @@ class TokenProvider(
     }
 
     fun validateToken(token: String): Boolean {
-        return try {
-            Jwts.parser()
-                .setSigningKey(jwtProperties.secret)
-                .parseClaimsJws(token)
-            true
-        } catch (e: ExpiredJwtException) {
-            throw UnAuthorizedException(
-                code = ErrorCode.EXPIRED_TOKEN,
-                message = ErrorCode.EXPIRED_TOKEN.koreanMessage
-            )
-        } catch (e: JwtException) {
-            throw UnAuthorizedException(
-                code = ErrorCode.INVALID_TOKEN,
-                message = ErrorCode.INVALID_TOKEN.koreanMessage
-            )
-        }
+        return runCatching { getClaims(token = token) }.isSuccess
+    }
+
+    private fun getClaims(token: String): Claims {
+        return Jwts.parser()
+            .setSigningKey(jwtProperties.secret)
+            .parseClaimsJws(token)
+            .body
     }
 }

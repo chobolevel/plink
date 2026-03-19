@@ -6,6 +6,7 @@ import com.plink.core.exception.ErrorCode
 import com.plink.user.domain.model.QUser.user
 import com.plink.user.domain.model.User
 import com.plink.user.domain.model.UserOrderType
+import com.plink.user.domain.model.UserSignUpType
 import com.plink.user.domain.repository.UserRepository
 import com.querydsl.core.types.OrderSpecifier
 import org.springframework.stereotype.Component
@@ -25,6 +26,10 @@ class UserRepositoryAdapter(
             code = ErrorCode.USER_NOT_FOUND,
             message = ErrorCode.USER_NOT_FOUND.koreanMessage
         )
+    }
+
+    override fun findByEmailAndSignUpType(email: String, signUpType: UserSignUpType): User? {
+        return userJpaRepository.findByEmailAndSignUpTypeAndIsResignedFalse(email, signUpType)
     }
 
     override fun searchUsers(

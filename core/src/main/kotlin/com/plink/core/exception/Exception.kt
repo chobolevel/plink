@@ -18,6 +18,12 @@ open class PolicyViolationException(
     override val throwable: Throwable? = null
 ) : PlinkException(code, message, throwable)
 
+open class BadCredentialException(
+    override val code: ErrorCode,
+    override val message: String,
+    override val throwable: Throwable? = null
+) : PlinkException(code, message, throwable)
+
 open class UnAuthorizedException(
     override val code: ErrorCode,
     override val message: String,

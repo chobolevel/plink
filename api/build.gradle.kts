@@ -16,10 +16,6 @@ dependencies {
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.16")
     implementation("com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5")
 
-    // jwt
-    implementation("io.jsonwebtoken:jjwt:0.9.1")
-    implementation("javax.xml.bind:jaxb-api:2.3.1")
-
     testImplementation("org.springframework.security:spring-security-test")
 
     runtimeOnly("com.mysql:mysql-connector-j")

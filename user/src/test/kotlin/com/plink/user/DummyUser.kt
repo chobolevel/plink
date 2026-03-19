@@ -1,6 +1,7 @@
 package com.plink.user
 
 import com.plink.user.application.dto.CreateUserRequest
+import com.plink.user.application.dto.LoginCommonUserRequest
 import com.plink.user.application.dto.UpdateUserRequest
 import com.plink.user.application.dto.UserResponse
 import com.plink.user.domain.model.User
@@ -60,6 +61,13 @@ object DummyUser {
         )
     }
 
+    private val dummyLoginCommonUserRequest: LoginCommonUserRequest by lazy {
+        LoginCommonUserRequest(
+            email = email,
+            password = password
+        )
+    }
+
     fun toEntity(): User = dummyUser
 
     fun toResponse(): UserResponse = dummyUserResponse
@@ -67,4 +75,6 @@ object DummyUser {
     fun toCreateRequest(): CreateUserRequest = dummyCreateRequest
 
     fun toUpdateRequest(): UpdateUserRequest = dummyUpdateRequest
+
+    fun toLoginCommonUserRequest(): LoginCommonUserRequest = dummyLoginCommonUserRequest
 }

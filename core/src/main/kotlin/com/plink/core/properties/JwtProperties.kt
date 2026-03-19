@@ -1,4 +1,4 @@
-package com.plink.api.properties
+package com.plink.core.properties
 
 import org.springframework.boot.context.properties.ConfigurationProperties
 

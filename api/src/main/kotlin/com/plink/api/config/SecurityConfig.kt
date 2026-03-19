@@ -1,7 +1,7 @@
 package com.plink.api.config
 
 import com.plink.api.filter.OnceAuthorizeFilter
-import com.plink.api.provider.TokenProvider
+import com.plink.core.jwt.TokenProvider
 import com.plink.user.domain.repository.UserRepository
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -24,6 +24,8 @@ class SecurityConfig(
         http {
             cors { }
             csrf { disable() }
+            httpBasic { disable() }
+            formLogin { disable() }
             authorizeHttpRequests {
                 authorize(anyRequest, permitAll)
             }
