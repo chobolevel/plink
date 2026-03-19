@@ -14,6 +14,6 @@ spring:
 
 # JWT
 jwt:
-  issuer: chobolevel
-  secret: chobolevel-plink
-  cache-key: "user-refresh-token:v1"
+  issuer: ENC(IMwo1Tw7iNk3A6jXShGRktiAyrr4so02)
+  secret: ENC(VZ7OOIVlXTNg24ejE1ccGEnw5QA5HhnBkj7mwBm5pQE=)
+  cache-key: ENC(jX48JLxlH3OVrbREicVYd2tk4wf2vX9bnba4bqM9Du8=)
