@@ -96,4 +96,32 @@ class AuthServiceTest {
             .isInstanceOf(BadCredentialException::class.java)
             .hasMessage(ErrorCode.BAD_CREDENTIAL.koreanMessage)
     }
+
+    @Test
+    fun `로그인 시 비밀번호 일치하지 않아 예외 발생`() {
+        // given
+        val request: LoginCommonUserRequest = DummyUser.toLoginCommonUserRequest()
+        `when`(
+            userRepository.findByEmailAndSignUpType(
+                email = request.email,
+                signUpType = UserSignUpType.COMMON
+            )
+        ).thenReturn(dummyUser)
+        `when`(
+            userPasswordEncoder.match(
+                rawPassword = request.password,
+                encodedPassword = dummyUser.password!!
+            )
+        ).thenThrow(
+            BadCredentialException(
+                code = ErrorCode.BAD_CREDENTIAL,
+                message = ErrorCode.BAD_CREDENTIAL.koreanMessage
+            )
+        )
+
+        // when & then
+        assertThatThrownBy { authService.loginUser(request = request) }
+            .isInstanceOf(BadCredentialException::class.java)
+            .hasMessage(ErrorCode.BAD_CREDENTIAL.koreanMessage)
+    }
 }
