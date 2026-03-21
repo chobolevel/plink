@@ -4,6 +4,7 @@ import com.plink.core.dto.JwtResponse
 import com.plink.core.exception.BadCredentialException
 import com.plink.core.exception.ErrorCode
 import com.plink.core.jwt.TokenProvider
+import com.plink.core.repository.CacheRepository
 import com.plink.user.application.dto.LoginCommonUserRequest
 import com.plink.user.domain.model.User
 import com.plink.user.domain.model.UserSignUpType
@@ -16,7 +17,8 @@ import org.springframework.transaction.annotation.Transactional
 class AuthService(
     private val userRepository: UserRepository,
     private val userPasswordEncoder: UserPasswordEncoder,
-    private val tokenProvider: TokenProvider
+    private val tokenProvider: TokenProvider,
+    private val cacheRepository: CacheRepository
 ) {
 
     // 부가 로직이 트랜잭션에 잡히므로 repository 트랜잭션 위임하는 것도 방법(붚필요한 커넥션 소유)
@@ -35,6 +37,12 @@ class AuthService(
             encodedPassword = user.password!!
         )
 
-        return tokenProvider.generateToken(userId = user.id!!)
+        val jwtResponse: JwtResponse = tokenProvider.generateToken(userId = user.id!!)
+        cacheRepository.saveRefreshToken(
+            userId = user.id!!,
+            refreshToken = jwtResponse.refreshToken
+        )
+
+        return jwtResponse
     }
 }

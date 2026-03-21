@@ -4,6 +4,7 @@ import com.plink.core.dto.JwtResponse
 import com.plink.core.exception.BadCredentialException
 import com.plink.core.exception.ErrorCode
 import com.plink.core.jwt.TokenProvider
+import com.plink.core.repository.CacheRepository
 import com.plink.user.application.AuthService
 import com.plink.user.application.dto.LoginCommonUserRequest
 import com.plink.user.domain.model.User
@@ -17,6 +18,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
+import org.mockito.Mockito.doNothing
 import org.mockito.Mockito.`when`
 import org.mockito.junit.jupiter.MockitoExtension
 
@@ -35,6 +37,9 @@ class AuthServiceTest {
     @Mock
     private lateinit var tokenProvider: TokenProvider
 
+    @Mock
+    private lateinit var cacheRepository: CacheRepository
+
     @InjectMocks
     private lateinit var authService: AuthService
 
@@ -48,18 +53,15 @@ class AuthServiceTest {
             refreshTokenExpiredAt = 0L
         )
         val request: LoginCommonUserRequest = DummyUser.toLoginCommonUserRequest()
-
         `when`(
             userRepository.findByEmailAndSignUpType(
                 email = request.email,
                 signUpType = UserSignUpType.COMMON
             )
         ).thenReturn(dummyUser)
-        `when`(
-            userPasswordEncoder.match(
-                rawPassword = request.password,
-                encodedPassword = dummyUser.password!!
-            )
+        doNothing().`when`(userPasswordEncoder).match(
+            rawPassword = request.password,
+            encodedPassword = dummyUser.password!!
         )
         `when`(
             tokenProvider.generateToken(
