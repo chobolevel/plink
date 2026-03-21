@@ -19,4 +19,8 @@ class CacheRepository(
     fun findUserIdByRefreshToken(refreshToken: String): String? {
         return opsForHash.get(jwtProperties.cacheKey, refreshToken)
     }
+
+    fun deleteRefreshToken(refreshToken: String) {
+        opsForHash.delete(jwtProperties.cacheKey, refreshToken)
+    }
 }

@@ -3,6 +3,7 @@ package com.plink.user.application
 import com.plink.core.dto.JwtResponse
 import com.plink.core.exception.BadCredentialException
 import com.plink.core.exception.ErrorCode
+import com.plink.core.exception.UnAuthorizedException
 import com.plink.core.jwt.TokenProvider
 import com.plink.core.repository.CacheRepository
 import com.plink.user.application.dto.LoginCommonUserRequest
@@ -43,6 +44,29 @@ class AuthService(
             refreshToken = jwtResponse.refreshToken
         )
 
+        return jwtResponse
+    }
+
+    @Transactional(readOnly = true)
+    fun reissue(refreshToken: String): JwtResponse {
+        // TODO 예외를 이걸로 던지는 게 맞을까?
+        val isValidRefreshToken: Boolean = tokenProvider.validateToken(token = refreshToken)
+        if (!isValidRefreshToken) {
+            throw UnAuthorizedException(
+                code = ErrorCode.INVALID_TOKEN,
+                message = ErrorCode.INVALID_TOKEN.koreanMessage
+            )
+        }
+        val userId: String = cacheRepository.findUserIdByRefreshToken(refreshToken = refreshToken) ?: throw UnAuthorizedException(
+            code = ErrorCode.INVALID_TOKEN,
+            message = ErrorCode.INVALID_TOKEN.koreanMessage
+        )
+        val jwtResponse: JwtResponse = tokenProvider.generateToken(userId = userId)
+        cacheRepository.deleteRefreshToken(refreshToken = refreshToken)
+        cacheRepository.saveRefreshToken(
+            userId = userId,
+            refreshToken = jwtResponse.refreshToken
+        )
         return jwtResponse
     }
 }

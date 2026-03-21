@@ -28,6 +28,13 @@ class AuthServiceTest {
 
     private val dummyUser: User = DummyUser.toEntity()
 
+    val dummyJwtResponse = JwtResponse(
+        accessToken = "access-token",
+        accessTokenExpiredAt = 0L,
+        refreshToken = "refresh-token",
+        refreshTokenExpiredAt = 0L
+    )
+
     @Mock
     private lateinit var userRepository: UserRepository
 
@@ -46,12 +53,6 @@ class AuthServiceTest {
     @Test
     fun `일반 회원 로그인`() {
         // given
-        val dummyJwtResponse = JwtResponse(
-            accessToken = "access-token",
-            accessTokenExpiredAt = 0L,
-            refreshToken = "refresh-token",
-            refreshTokenExpiredAt = 0L
-        )
         val request: LoginCommonUserRequest = DummyUser.toLoginCommonUserRequest()
         `when`(
             userRepository.findByEmailAndSignUpType(
@@ -125,5 +126,22 @@ class AuthServiceTest {
         assertThatThrownBy { authService.loginUser(request = request) }
             .isInstanceOf(BadCredentialException::class.java)
             .hasMessage(ErrorCode.BAD_CREDENTIAL.koreanMessage)
+    }
+
+    @Test
+    fun `토큰 갱신`() {
+        // given
+        val dummyUserId: String = dummyUser.id!!
+        val dummyRefreshToken = "refresh-token"
+        `when`(tokenProvider.validateToken(token = dummyRefreshToken)).thenReturn(true)
+        `when`(cacheRepository.findUserIdByRefreshToken(refreshToken = dummyRefreshToken)).thenReturn(dummyUserId)
+        `when`(tokenProvider.generateToken(userId = dummyUserId)).thenReturn(dummyJwtResponse)
+
+        // when
+        val result: JwtResponse = authService.reissue(refreshToken = dummyRefreshToken)
+
+        // then
+        assertThat(result.accessToken).isEqualTo("access-token")
+        assertThat(result.refreshToken).isEqualTo("refresh-token")
     }
 }
