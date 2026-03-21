@@ -49,7 +49,7 @@ class AuthService(
 
     @Transactional(readOnly = true)
     fun reissue(refreshToken: String): JwtResponse {
-        // TODO 예외를 이걸로 던지는 게 맞을까?
+        // 예외를 이걸로 던지는 게 맞을까?
         val isValidRefreshToken: Boolean = tokenProvider.validateToken(token = refreshToken)
         if (!isValidRefreshToken) {
             throw UnAuthorizedException(
