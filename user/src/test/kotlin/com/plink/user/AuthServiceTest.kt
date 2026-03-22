@@ -3,6 +3,7 @@ package com.plink.user
 import com.plink.core.dto.JwtResponse
 import com.plink.core.exception.BadCredentialException
 import com.plink.core.exception.ErrorCode
+import com.plink.core.exception.UnAuthorizedException
 import com.plink.core.jwt.TokenProvider
 import com.plink.core.repository.CacheRepository
 import com.plink.user.application.AuthService
@@ -143,5 +144,18 @@ class AuthServiceTest {
         // then
         assertThat(result.accessToken).isEqualTo("access-token")
         assertThat(result.refreshToken).isEqualTo("refresh-token")
+    }
+
+    @Test
+    fun `토큰 갱신 시 유효하지 않은 토큰 예외 발생`() {
+        // given
+        val dummyUserId: String = dummyUser.id!!
+        val dummyRefreshToken = "refresh-token"
+        `when`(tokenProvider.validateToken(token = dummyRefreshToken)).thenReturn(false)
+
+        // when & then
+        assertThatThrownBy { authService.reissue(refreshToken = dummyRefreshToken) }
+            .isInstanceOf(UnAuthorizedException::class.java)
+            .hasMessage(ErrorCode.INVALID_TOKEN.koreanMessage)
     }
 }
