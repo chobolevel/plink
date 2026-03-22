@@ -149,7 +149,6 @@ class AuthServiceTest {
     @Test
     fun `토큰 갱신 시 유효하지 않은 토큰 예외 발생`() {
         // given
-        val dummyUserId: String = dummyUser.id!!
         val dummyRefreshToken = "refresh-token"
         `when`(tokenProvider.validateToken(token = dummyRefreshToken)).thenReturn(false)
 
