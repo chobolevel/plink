@@ -157,4 +157,17 @@ class AuthServiceTest {
             .isInstanceOf(UnAuthorizedException::class.java)
             .hasMessage(ErrorCode.INVALID_TOKEN.koreanMessage)
     }
+
+    @Test
+    fun `토큰 갱신 시 저장되지 않은 토큰 이슈`() {
+        // given
+        val dummyRefreshToken = "refresh-token"
+        `when`(tokenProvider.validateToken(token = dummyRefreshToken)).thenReturn(true)
+        `when`(cacheRepository.findUserIdByRefreshToken(refreshToken = dummyRefreshToken)).thenReturn(null)
+
+        // when & then
+        assertThatThrownBy { authService.reissue(refreshToken = dummyRefreshToken) }
+            .isInstanceOf(UnAuthorizedException::class.java)
+            .hasMessage(ErrorCode.INVALID_TOKEN.koreanMessage)
+    }
 }
