@@ -2,6 +2,7 @@ package com.plink.user
 
 import com.plink.user.application.dto.CreateUserRequest
 import com.plink.user.application.dto.LoginCommonUserRequest
+import com.plink.user.application.dto.LoginSocialUserRequest
 import com.plink.user.application.dto.UpdateUserRequest
 import com.plink.user.application.dto.UserResponse
 import com.plink.user.domain.model.User
@@ -20,6 +21,16 @@ object DummyUser {
     private const val createdAt: Long = 0L
     private const val updatedAt: Long = 0L
 
+    private const val socialUserId: String = "test-social-user-id"
+    private const val socialUserEmail: String = "social-user@naver.com"
+    private const val socialUserSocialId: String = "naver-social-id"
+    private val socialUserSignUpType: UserSignUpType = UserSignUpType.NAVER
+    private const val socialUserNickname: String = "testSocialUser"
+    private val socialUserRole: UserRoleType = UserRoleType.USER
+    private const val socialUserBalance: Int = 0
+    private const val socialUserCreatedAt: Long = 0L
+    private const val socialUserUpdatedAt: Long = 0L
+
     private val dummyUser: User by lazy {
         User(
             email = email,
@@ -30,6 +41,18 @@ object DummyUser {
             role = role,
             balance = balance
         ).also { it.id = id }
+    }
+
+    private val dummySocialUser: User by lazy {
+        User(
+            email = socialUserEmail,
+            password = null,
+            socialId = socialUserSocialId,
+            signUpType = socialUserSignUpType,
+            nickname = socialUserNickname,
+            role = socialUserRole,
+            balance = socialUserBalance
+        ).also { it.id = socialUserId }
     }
 
     private val dummyUserResponse: UserResponse by lazy {
@@ -68,7 +91,17 @@ object DummyUser {
         )
     }
 
+    private val dummyLoginSocialUserRequest: LoginSocialUserRequest by lazy {
+        LoginSocialUserRequest(
+            email = socialUserEmail,
+            socialId = socialUserSocialId,
+            signUpType = socialUserSignUpType
+        )
+    }
+
     fun toEntity(): User = dummyUser
+
+    fun toSocialUserEntity(): User = dummySocialUser
 
     fun toResponse(): UserResponse = dummyUserResponse
 
@@ -77,4 +110,6 @@ object DummyUser {
     fun toUpdateRequest(): UpdateUserRequest = dummyUpdateRequest
 
     fun toLoginCommonUserRequest(): LoginCommonUserRequest = dummyLoginCommonUserRequest
+
+    fun toLoginSocialUserRequest(): LoginSocialUserRequest = dummyLoginSocialUserRequest
 }

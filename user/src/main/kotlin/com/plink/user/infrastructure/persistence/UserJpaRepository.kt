@@ -9,4 +9,6 @@ interface UserJpaRepository : JpaRepository<User, String> {
     fun findByIdAndIsResignedFalse(id: String): User?
 
     fun findByEmailAndSignUpTypeAndIsResignedFalse(email: String, signUpType: UserSignUpType): User?
+
+    fun findByEmailAndSocialIdAndSignUpTypeAndIsResignedFalse(email: String, socialId: String, signUpType: UserSignUpType): User?
 }

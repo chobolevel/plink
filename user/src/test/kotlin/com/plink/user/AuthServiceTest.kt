@@ -8,6 +8,7 @@ import com.plink.core.jwt.TokenProvider
 import com.plink.core.repository.CacheRepository
 import com.plink.user.application.AuthService
 import com.plink.user.application.dto.LoginCommonUserRequest
+import com.plink.user.application.dto.LoginSocialUserRequest
 import com.plink.user.domain.model.User
 import com.plink.user.domain.model.UserSignUpType
 import com.plink.user.domain.repository.UserRepository
@@ -28,6 +29,8 @@ import org.mockito.junit.jupiter.MockitoExtension
 class AuthServiceTest {
 
     private val dummyUser: User = DummyUser.toEntity()
+
+    private val dummySocialUser: User = DummyUser.toSocialUserEntity()
 
     val dummyJwtResponse = JwtResponse(
         accessToken = "access-token",
@@ -125,6 +128,50 @@ class AuthServiceTest {
 
         // when & then
         assertThatThrownBy { authService.loginUser(request = request) }
+            .isInstanceOf(BadCredentialException::class.java)
+            .hasMessage(ErrorCode.BAD_CREDENTIAL.koreanMessage)
+    }
+
+    @Test
+    fun `소셜 회원 로그인`() {
+        // given
+        val request: LoginSocialUserRequest = DummyUser.toLoginSocialUserRequest()
+        `when`(
+            userRepository.findByEmailAndSocialIdAndSignUpType(
+                email = request.email,
+                socialId = request.socialId,
+                signUpType = request.signUpType
+            )
+        ).thenReturn(dummySocialUser)
+        `when`(tokenProvider.generateToken(userId = dummySocialUser.id!!)).thenReturn(dummyJwtResponse)
+
+        // when
+        val result: JwtResponse = authService.loginSocialUser(request = request)
+
+        // then
+        assertThat(result.accessToken).isEqualTo("access-token")
+        assertThat(result.refreshToken).isEqualTo("refresh-token")
+    }
+
+    @Test
+    fun `소설 회원 로그인 시 존재하지 않는 회원 예외 발생`() {
+        // given
+        val request: LoginSocialUserRequest = DummyUser.toLoginSocialUserRequest()
+        `when`(
+            userRepository.findByEmailAndSocialIdAndSignUpType(
+                email = request.email,
+                socialId = request.socialId,
+                signUpType = request.signUpType
+            )
+        ).thenThrow(
+            BadCredentialException(
+                code = ErrorCode.BAD_CREDENTIAL,
+                message = ErrorCode.BAD_CREDENTIAL.koreanMessage
+            )
+        )
+
+        // when & then
+        assertThatThrownBy { authService.loginSocialUser(request = request) }
             .isInstanceOf(BadCredentialException::class.java)
             .hasMessage(ErrorCode.BAD_CREDENTIAL.koreanMessage)
     }

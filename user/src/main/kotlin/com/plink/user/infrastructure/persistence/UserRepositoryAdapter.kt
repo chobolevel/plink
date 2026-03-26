@@ -32,6 +32,14 @@ class UserRepositoryAdapter(
         return userJpaRepository.findByEmailAndSignUpTypeAndIsResignedFalse(email, signUpType)
     }
 
+    override fun findByEmailAndSocialIdAndSignUpType(
+        email: String,
+        socialId: String,
+        signUpType: UserSignUpType
+    ): User? {
+        return userJpaRepository.findByEmailAndSocialIdAndSignUpTypeAndIsResignedFalse(email, socialId, signUpType)
+    }
+
     override fun searchUsers(
         queryFilter: UserQueryFilter,
         paging: Paging,

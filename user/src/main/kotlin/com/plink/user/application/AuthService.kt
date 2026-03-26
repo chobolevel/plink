@@ -7,6 +7,7 @@ import com.plink.core.exception.UnAuthorizedException
 import com.plink.core.jwt.TokenProvider
 import com.plink.core.repository.CacheRepository
 import com.plink.user.application.dto.LoginCommonUserRequest
+import com.plink.user.application.dto.LoginSocialUserRequest
 import com.plink.user.domain.model.User
 import com.plink.user.domain.model.UserSignUpType
 import com.plink.user.domain.repository.UserRepository
@@ -36,6 +37,26 @@ class AuthService(
         userPasswordEncoder.match(
             rawPassword = request.password,
             encodedPassword = user.password!!
+        )
+
+        val jwtResponse: JwtResponse = tokenProvider.generateToken(userId = user.id!!)
+        cacheRepository.saveRefreshToken(
+            userId = user.id!!,
+            refreshToken = jwtResponse.refreshToken
+        )
+
+        return jwtResponse
+    }
+
+    @Transactional(readOnly = true)
+    fun loginSocialUser(request: LoginSocialUserRequest): JwtResponse {
+        val user: User = userRepository.findByEmailAndSocialIdAndSignUpType(
+            email = request.email,
+            socialId = request.socialId,
+            signUpType = request.signUpType
+        ) ?: throw BadCredentialException(
+            code = ErrorCode.BAD_CREDENTIAL,
+            message = ErrorCode.BAD_CREDENTIAL.koreanMessage
         )
 
         val jwtResponse: JwtResponse = tokenProvider.generateToken(userId = user.id!!)

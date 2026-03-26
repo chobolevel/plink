@@ -4,6 +4,7 @@ import com.plink.core.dto.ApiResponse
 import com.plink.core.dto.JwtResponse
 import com.plink.user.application.AuthService
 import com.plink.user.application.dto.LoginCommonUserRequest
+import com.plink.user.application.dto.LoginSocialUserRequest
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
@@ -28,6 +29,16 @@ class AuthController(
         request: LoginCommonUserRequest
     ): ResponseEntity<ApiResponse> {
         val result: JwtResponse = authService.loginUser(request = request)
+        return ResponseEntity.ok(ApiResponse.of(data = result))
+    }
+
+    @Operation(summary = "소셜 회원 로그인 API")
+    @PostMapping("/login/social-user")
+    fun loginSocialUser(
+        @Valid @RequestBody
+        request: LoginSocialUserRequest
+    ): ResponseEntity<ApiResponse> {
+        val result: JwtResponse = authService.loginSocialUser(request = request)
         return ResponseEntity.ok(ApiResponse.of(data = result))
     }
 

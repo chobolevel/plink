@@ -14,6 +14,8 @@ interface UserRepository {
 
     fun findByEmailAndSignUpType(email: String, signUpType: UserSignUpType): User?
 
+    fun findByEmailAndSocialIdAndSignUpType(email: String, socialId: String, signUpType: UserSignUpType): User?
+
     fun searchUsers(
         queryFilter: UserQueryFilter,
         paging: Paging,
