@@ -91,4 +91,16 @@ class AuthService(
         )
         return jwtResponse
     }
+
+    fun logout(refreshToken: String): Boolean {
+        val isValidRefreshToken: Boolean = tokenProvider.validateToken(token = refreshToken)
+        if (!isValidRefreshToken) {
+            throw UnAuthorizedException(
+                code = ErrorCode.INVALID_TOKEN,
+                message = ErrorCode.INVALID_TOKEN.koreanMessage
+            )
+        }
+        cacheRepository.deleteRefreshToken(refreshToken = refreshToken)
+        return true
+    }
 }

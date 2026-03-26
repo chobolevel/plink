@@ -48,4 +48,11 @@ class AuthController(
         val result: JwtResponse = authService.reissue(refreshToken)
         return ResponseEntity.ok(ApiResponse.of(data = result))
     }
+
+    @Operation(summary = "로그아웃 API")
+    @PostMapping("/logout")
+    fun logout(@RequestParam("refreshToken") refreshToken: String): ResponseEntity<ApiResponse> {
+        val result: Boolean = authService.logout(refreshToken = refreshToken)
+        return ResponseEntity.ok(ApiResponse.of(data = result))
+    }
 }

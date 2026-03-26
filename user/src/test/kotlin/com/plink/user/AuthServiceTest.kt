@@ -217,4 +217,20 @@ class AuthServiceTest {
             .isInstanceOf(UnAuthorizedException::class.java)
             .hasMessage(ErrorCode.INVALID_TOKEN.koreanMessage)
     }
+
+    @Test
+    fun `로그아웃`() {
+        // given
+        val dummyRefreshToken = "refresh-token"
+        `when`(tokenProvider.validateToken(token = dummyRefreshToken)).thenReturn(true)
+        doNothing().`when`(cacheRepository).deleteRefreshToken(
+            refreshToken = dummyRefreshToken
+        )
+
+        // when
+        val result: Boolean = authService.logout(refreshToken = dummyRefreshToken)
+
+        // then
+        assertThat(result).isTrue
+    }
 }
