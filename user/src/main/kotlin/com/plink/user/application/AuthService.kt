@@ -24,6 +24,7 @@ class AuthService(
 ) {
 
     // 부가 로직이 트랜잭션에 잡히므로 repository 트랜잭션 위임하는 것도 방법(붚필요한 커넥션 소유)
+    // readOnly = true: DB는 조회만 수행, cacheRepository는 JPA 트랜잭션 범위 밖(Redis)
     @Transactional(readOnly = true)
     fun loginUser(request: LoginCommonUserRequest): JwtResponse {
         val user: User = userRepository.findByEmailAndSignUpType(
@@ -36,7 +37,7 @@ class AuthService(
 
         userPasswordEncoder.match(
             rawPassword = request.password,
-            encodedPassword = user.password!!
+            encodedPassword = user.password
         )
 
         val jwtResponse: JwtResponse = tokenProvider.generateToken(userId = user.id!!)

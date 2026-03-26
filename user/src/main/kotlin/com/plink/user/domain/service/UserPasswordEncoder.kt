@@ -4,5 +4,5 @@ interface UserPasswordEncoder {
 
     fun encode(rawPassword: String): String
 
-    fun match(rawPassword: String, encodedPassword: String)
+    fun match(rawPassword: String, encodedPassword: String?)
 }

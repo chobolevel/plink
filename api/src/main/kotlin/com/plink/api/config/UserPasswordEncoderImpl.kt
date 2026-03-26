@@ -15,7 +15,7 @@ class UserPasswordEncoderImpl(
         return bcryptPasswordEncoder.encode(rawPassword)
     }
 
-    override fun match(rawPassword: String, encodedPassword: String) {
+    override fun match(rawPassword: String, encodedPassword: String?) {
         if (!bcryptPasswordEncoder.matches(rawPassword, encodedPassword)) {
             throw BadCredentialException(
                 code = ErrorCode.BAD_CREDENTIAL,
