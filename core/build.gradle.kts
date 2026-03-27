@@ -19,8 +19,9 @@ dependencies {
     kapt("com.querydsl:querydsl-apt:$queryDslVersion:jakarta")
 
     // jwt
-    implementation("io.jsonwebtoken:jjwt:0.9.1")
-    implementation("javax.xml.bind:jaxb-api:2.3.1")
+    implementation("io.jsonwebtoken:jjwt-api:0.12.6")
+    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.6")
+    runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.6")
 }
 
 allOpen {

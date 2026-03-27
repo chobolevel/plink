@@ -3,17 +3,23 @@ package com.plink.core.jwt
 import com.plink.core.dto.JwtResponse
 import com.plink.core.properties.JwtProperties
 import io.jsonwebtoken.Claims
-import io.jsonwebtoken.Header
 import io.jsonwebtoken.Jwts
-import io.jsonwebtoken.SignatureAlgorithm
+import io.jsonwebtoken.security.Keys
 import org.springframework.stereotype.Component
+import java.util.Base64
 import java.util.Date
 import java.util.concurrent.TimeUnit
+import javax.crypto.SecretKey
 
 @Component
 class TokenProvider(
     private val jwtProperties: JwtProperties,
 ) {
+
+    private val secretKey: SecretKey by lazy {
+        val keyBytes = Base64.getDecoder().decode(jwtProperties.secret)
+        Keys.hmacShaKeyFor(keyBytes)
+    }
 
     fun generateToken(userId: String): JwtResponse {
         val now = Date()
@@ -39,21 +45,16 @@ class TokenProvider(
 
     private fun generateJwtToken(subject: String, issuedAt: Date, expiredAt: Date): String {
         return Jwts.builder()
-            .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
-            .setIssuer(jwtProperties.issuer)
-            .setIssuedAt(issuedAt)
-            .setExpiration(expiredAt)
-            .setSubject(subject)
-            .signWith(SignatureAlgorithm.HS256, jwtProperties.secret)
+            .issuer(jwtProperties.issuer)
+            .issuedAt(issuedAt)
+            .expiration(expiredAt)
+            .subject(subject)
+            .signWith(secretKey, Jwts.SIG.HS256)
             .compact()
     }
 
     fun getUserId(token: String): String {
-        val claims: Claims = Jwts.parser()
-            .setSigningKey(jwtProperties.secret)
-            .parseClaimsJws(token)
-            .body
-        return claims.subject
+        return getClaims(token).subject
     }
 
     fun validateToken(token: String): Boolean {
@@ -62,8 +63,9 @@ class TokenProvider(
 
     private fun getClaims(token: String): Claims {
         return Jwts.parser()
-            .setSigningKey(jwtProperties.secret)
-            .parseClaimsJws(token)
-            .body
+            .verifyWith(secretKey)
+            .build()
+            .parseSignedClaims(token)
+            .payload
     }
 }
