@@ -15,7 +15,6 @@ class JasyptConfig {
     fun stringEncryptor(): StringEncryptor {
         val encryptor = PooledPBEStringEncryptor()
         val config = SimpleStringPBEConfig()
-        config.password = "chobolevel-plink"
         config.algorithm = "PBEWithMD5AndDES"
         config.setKeyObtentionIterations("1000")
         config.setPoolSize("1")
