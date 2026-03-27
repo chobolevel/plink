@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository
 class RedisCacheRepository(
     private val jwtProperties: JwtProperties,
     private val redisTemplate: RedisTemplate<String, String>
-): CacheRepository {
+) : CacheRepository {
 
     private val opsForHash = redisTemplate.opsForHash<String, String>()
 
