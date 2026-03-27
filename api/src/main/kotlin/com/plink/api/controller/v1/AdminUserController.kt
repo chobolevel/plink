@@ -10,6 +10,7 @@ import com.plink.user.application.dto.CreateUserRequest
 import com.plink.user.application.dto.SearchUserRequest
 import com.plink.user.application.dto.UpdateUserRequest
 import com.plink.user.application.dto.UserResponse
+import com.plink.user.domain.service.UserValidator
 import com.plink.user.infrastructure.persistence.UserQueryFilter
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -27,7 +28,8 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/api/admin/v1")
 class AdminUserController(
-    private val userService: UserService
+    private val userService: UserService,
+    private val userValidator: UserValidator
 ) {
 
     @Operation(summary = "회원 등록 API")
@@ -85,6 +87,7 @@ class AdminUserController(
         @Valid @RequestBody
         request: UpdateUserRequest
     ): ResponseEntity<ApiResponse> {
+        userValidator.validate(request = request)
         val result: String = userService.updateUser(userId = userId, request = request)
         return ResponseEntity.ok(ApiResponse.of(data = result))
     }

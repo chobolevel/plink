@@ -10,12 +10,14 @@ import com.plink.user.domain.model.UserOrderType
 import com.plink.user.domain.repository.UserRepository
 import com.plink.user.domain.service.UserConverter
 import com.plink.user.domain.service.UserUpdater
+import com.plink.user.domain.service.UserValidator
 import com.plink.user.infrastructure.persistence.UserQueryFilter
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
 class UserService(
+    private val userValidator: UserValidator,
     private val userRepository: UserRepository,
     private val userConverter: UserConverter,
     private val userUpdater: UserUpdater
@@ -23,6 +25,7 @@ class UserService(
 
     @Transactional
     fun createUser(request: CreateUserRequest): String {
+        userValidator.validate(request = request)
         val baseUser: User = userConverter.toEntity(request = request)
         return userRepository.save(user = baseUser).id!!
     }

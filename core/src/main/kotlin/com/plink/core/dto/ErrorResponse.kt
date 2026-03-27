@@ -1,9 +1,10 @@
 package com.plink.core.dto
 
+import com.plink.core.exception.ErrorCode
 import com.plink.core.vo.ResultType
 
 data class Error(
-    val code: String,
+    val code: ErrorCode,
     val message: String
 )
 
@@ -13,7 +14,7 @@ data class ErrorResponse private constructor(
 ) {
 
     companion object {
-        fun of(code: String, message: String): ErrorResponse {
+        fun of(code: ErrorCode, message: String): ErrorResponse {
             return ErrorResponse(
                 result = ResultType.ERROR,
                 error = Error(code, message)

@@ -13,6 +13,7 @@ import com.plink.user.domain.model.UserOrderType
 import com.plink.user.domain.repository.UserRepository
 import com.plink.user.domain.service.UserConverter
 import com.plink.user.domain.service.UserUpdater
+import com.plink.user.domain.service.UserValidator
 import com.plink.user.infrastructure.persistence.UserQueryFilter
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
@@ -21,6 +22,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
+import org.mockito.Mockito.doNothing
 import org.mockito.Mockito.`when`
 import org.mockito.junit.jupiter.MockitoExtension
 
@@ -33,6 +35,9 @@ class UserServiceTest {
     private val dummyUser: User = DummyUser.toEntity()
 
     private val dummyUserResponse = DummyUser.toResponse()
+
+    @Mock
+    private lateinit var userValidator: UserValidator
 
     @Mock
     private lateinit var userRepository: UserRepository
@@ -50,6 +55,7 @@ class UserServiceTest {
     fun `회원 생성`() {
         // given
         val request: CreateUserRequest = DummyUser.toCreateRequest()
+        doNothing().`when`(userValidator).validate(request = request)
         `when`(userConverter.toEntity(request = request)).thenReturn(dummyUser)
         `when`(userRepository.save(user = dummyUser)).thenReturn(dummyUser)
 

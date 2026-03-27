@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository
 
 interface UserJpaRepository : JpaRepository<User, String> {
 
+    fun existsByEmail(email: String): Boolean
+
     fun findByIdAndIsResignedFalse(id: String): User?
 
     fun findByEmailAndSignUpTypeAndIsResignedFalse(email: String, signUpType: UserSignUpType): User?
