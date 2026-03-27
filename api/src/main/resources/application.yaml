@@ -17,3 +17,10 @@ jwt:
   issuer: ENC(IMwo1Tw7iNk3A6jXShGRktiAyrr4so02)
   secret: ENC(VZ7OOIVlXTNg24ejE1ccGEnw5QA5HhnBkj7mwBm5pQE=)
   cache-key: ENC(jX48JLxlH3OVrbREicVYd2tk4wf2vX9bnba4bqM9Du8=)
+
+# REDIS
+redis:
+  config:
+    host: localhost
+    port: 6379
+    password:

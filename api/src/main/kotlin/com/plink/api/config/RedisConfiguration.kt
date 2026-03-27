@@ -1,4 +1,4 @@
-package com.plink.core.config
+package com.plink.api.config
 
 import com.plink.core.properties.RedisProperties
 import org.springframework.context.annotation.Bean
