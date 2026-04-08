@@ -1,7 +1,7 @@
 package com.plink.user.application
 
-import com.plink.core.dto.ApiPagingResponse
-import com.plink.core.dto.Paging
+import com.plink.core.presentation.dto.ApiPagingResponse
+import com.plink.core.presentation.dto.Paging
 import com.plink.user.application.dto.CreateUserRequest
 import com.plink.user.application.dto.UpdateUserRequest
 import com.plink.user.application.dto.UserResponse

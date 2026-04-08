@@ -1,8 +1,8 @@
 package com.plink.user.domain.service
 
-import com.plink.core.exception.ErrorCode
-import com.plink.core.exception.InvalidParameterException
-import com.plink.core.exception.PolicyViolationException
+import com.plink.core.domain.exception.ErrorCode
+import com.plink.core.domain.exception.InvalidParameterException
+import com.plink.core.domain.exception.PolicyViolationException
 import com.plink.user.application.dto.CreateUserRequest
 import com.plink.user.application.dto.UpdateUserRequest
 import com.plink.user.domain.model.UserUpdateMask

@@ -1,7 +1,7 @@
 package com.plink.user.domain.model
 
-import com.plink.core.entity.BaseEntity
-import com.plink.core.generator.TsidGenerator
+import com.plink.core.domain.model.BaseEntity
+import com.plink.core.infrastructure.support.TsidGenerator
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType

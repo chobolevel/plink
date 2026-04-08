@@ -1,9 +1,9 @@
 package com.plink.user
 
-import com.plink.core.dto.ApiPagingResponse
-import com.plink.core.dto.Paging
-import com.plink.core.exception.DataNotFoundException
-import com.plink.core.exception.ErrorCode
+import com.plink.core.domain.exception.DataNotFoundException
+import com.plink.core.domain.exception.ErrorCode
+import com.plink.core.presentation.dto.ApiPagingResponse
+import com.plink.core.presentation.dto.Paging
 import com.plink.user.application.UserService
 import com.plink.user.application.dto.CreateUserRequest
 import com.plink.user.application.dto.UpdateUserRequest
