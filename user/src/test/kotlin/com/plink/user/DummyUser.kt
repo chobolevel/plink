@@ -1,5 +1,6 @@
 package com.plink.user
 
+import com.plink.user.application.dto.CreateSocialUserRequest
 import com.plink.user.application.dto.CreateUserRequest
 import com.plink.user.application.dto.LoginCommonUserRequest
 import com.plink.user.application.dto.LoginSocialUserRequest
@@ -77,6 +78,15 @@ object DummyUser {
         )
     }
 
+    private val dummyCreateSocialUserRequest: CreateSocialUserRequest by lazy {
+        CreateSocialUserRequest(
+            email = socialUserEmail,
+            nickname = socialUserNickname,
+            socialId = socialUserSocialId,
+            signUpType = socialUserSignUpType
+        )
+    }
+
     private val dummyUpdateRequest: UpdateUserRequest by lazy {
         UpdateUserRequest(
             nickname = "chobo",
@@ -106,6 +116,8 @@ object DummyUser {
     fun toResponse(): UserResponse = dummyUserResponse
 
     fun toCreateRequest(): CreateUserRequest = dummyCreateRequest
+
+    fun toCreateSocialRequest(): CreateSocialUserRequest = dummyCreateSocialUserRequest
 
     fun toUpdateRequest(): UpdateUserRequest = dummyUpdateRequest
 

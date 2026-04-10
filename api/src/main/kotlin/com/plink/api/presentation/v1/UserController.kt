@@ -4,6 +4,7 @@ import com.plink.api.common.annotation.AnyAuthorize
 import com.plink.core.extension.getUserId
 import com.plink.core.presentation.dto.ApiResponse
 import com.plink.user.application.UserService
+import com.plink.user.application.dto.CreateSocialUserRequest
 import com.plink.user.application.dto.CreateUserRequest
 import com.plink.user.application.dto.UpdateUserRequest
 import com.plink.user.application.dto.UserResponse
@@ -28,13 +29,23 @@ class UserController(
     private val userValidator: UserValidator
 ) {
 
-    @Operation(summary = "회원 가입 API")
+    @Operation(summary = "일반 회원 가입 API")
     @PostMapping("/users")
     fun createUser(
         @Valid @RequestBody
         request: CreateUserRequest
     ): ResponseEntity<ApiResponse> {
         val result: String = userService.createUser(request = request)
+        return ResponseEntity.ok(ApiResponse.of(data = result))
+    }
+
+    @Operation(summary = "소셜 회원 가입 API")
+    @PostMapping("/social-users")
+    fun createSocialUser(
+        @Valid @RequestBody
+        request: CreateSocialUserRequest
+    ): ResponseEntity<ApiResponse> {
+        val result: String = userService.createSocialUser(request = request)
         return ResponseEntity.ok(ApiResponse.of(data = result))
     }
 

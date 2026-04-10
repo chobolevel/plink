@@ -1,6 +1,7 @@
 package com.plink.user.domain.service
 
 import com.plink.core.extension.toMillis
+import com.plink.user.application.dto.CreateSocialUserRequest
 import com.plink.user.application.dto.CreateUserRequest
 import com.plink.user.application.dto.UserResponse
 import com.plink.user.domain.model.User
@@ -18,6 +19,18 @@ class UserConverter(
             email = request.email,
             password = passwordEncoder.encode(rawPassword = request.password),
             signUpType = UserSignUpType.COMMON,
+            nickname = request.nickname,
+            role = UserRoleType.USER,
+            balance = 0
+        )
+    }
+
+    fun toEntity(request: CreateSocialUserRequest): User {
+        return User(
+            email = request.email,
+            password = null,
+            socialId = request.socialId,
+            signUpType = request.signUpType,
             nickname = request.nickname,
             role = UserRoleType.USER,
             balance = 0

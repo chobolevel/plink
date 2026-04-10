@@ -8,6 +8,8 @@ interface UserJpaRepository : JpaRepository<User, String> {
 
     fun existsByEmail(email: String): Boolean
 
+    fun existsByEmailAndSignUpTypeAndIsResignedFalse(email: String, signUpType: UserSignUpType): Boolean
+
     fun findByIdAndIsResignedFalse(id: String): User?
 
     fun findByEmailAndSignUpTypeAndIsResignedFalse(email: String, signUpType: UserSignUpType): User?

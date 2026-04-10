@@ -5,6 +5,7 @@ import com.plink.core.domain.exception.ErrorCode
 import com.plink.core.presentation.dto.ApiPagingResponse
 import com.plink.core.presentation.dto.Paging
 import com.plink.user.application.UserService
+import com.plink.user.application.dto.CreateSocialUserRequest
 import com.plink.user.application.dto.CreateUserRequest
 import com.plink.user.application.dto.UpdateUserRequest
 import com.plink.user.application.dto.UserResponse
@@ -33,6 +34,8 @@ class UserServiceTest {
     private val invalidUserId: String = "invalid-user-id"
 
     private val dummyUser: User = DummyUser.toEntity()
+
+    private val dummySocialUser: User = DummyUser.toSocialUserEntity()
 
     private val dummyUserResponse = DummyUser.toResponse()
 
@@ -64,6 +67,21 @@ class UserServiceTest {
 
         // then
         assertThat(result).isEqualTo(dummyUser.id)
+    }
+
+    @Test
+    fun `소셜 회원 생성`() {
+        // given
+        val request: CreateSocialUserRequest = DummyUser.toCreateSocialRequest()
+        doNothing().`when`(userValidator).validate(request = request)
+        `when`(userConverter.toEntity(request = request)).thenReturn(dummySocialUser)
+        `when`(userRepository.save(user = dummySocialUser)).thenReturn(dummySocialUser)
+
+        // when
+        val result: String = userService.createSocialUser(request = request)
+
+        // then
+        assertThat(result).isEqualTo(dummySocialUser.id)
     }
 
     @Test

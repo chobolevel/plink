@@ -2,6 +2,7 @@ package com.plink.user.application
 
 import com.plink.core.presentation.dto.ApiPagingResponse
 import com.plink.core.presentation.dto.Paging
+import com.plink.user.application.dto.CreateSocialUserRequest
 import com.plink.user.application.dto.CreateUserRequest
 import com.plink.user.application.dto.UpdateUserRequest
 import com.plink.user.application.dto.UserResponse
@@ -25,6 +26,13 @@ class UserService(
 
     @Transactional
     fun createUser(request: CreateUserRequest): String {
+        userValidator.validate(request = request)
+        val baseUser: User = userConverter.toEntity(request = request)
+        return userRepository.save(user = baseUser).id!!
+    }
+
+    @Transactional
+    fun createSocialUser(request: CreateSocialUserRequest): String {
         userValidator.validate(request = request)
         val baseUser: User = userConverter.toEntity(request = request)
         return userRepository.save(user = baseUser).id!!
