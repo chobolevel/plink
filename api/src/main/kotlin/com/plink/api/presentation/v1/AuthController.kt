@@ -1,5 +1,6 @@
 package com.plink.api.presentation.v1
 
+import com.plink.core.domain.constant.HeaderConstant
 import com.plink.core.presentation.dto.ApiResponse
 import com.plink.core.presentation.dto.JwtResponse
 import com.plink.user.application.AuthService
@@ -11,8 +12,8 @@ import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @Tag(name = "Auth(인증)", description = "인증 도메인 API")
@@ -44,14 +45,14 @@ class AuthController(
 
     @Operation(summary = "토큰 갱신 API")
     @PostMapping("/reissue")
-    fun reissue(@RequestParam("refreshToken") refreshToken: String): ResponseEntity<ApiResponse> {
+    fun reissue(@RequestHeader(HeaderConstant.X_REFRESH_TOKEN) refreshToken: String): ResponseEntity<ApiResponse> {
         val result: JwtResponse = authService.reissue(refreshToken)
         return ResponseEntity.ok(ApiResponse.of(data = result))
     }
 
     @Operation(summary = "로그아웃 API")
     @PostMapping("/logout")
-    fun logout(@RequestParam("refreshToken") refreshToken: String): ResponseEntity<ApiResponse> {
+    fun logout(@RequestHeader(HeaderConstant.X_REFRESH_TOKEN) refreshToken: String): ResponseEntity<ApiResponse> {
         val result: Boolean = authService.logout(refreshToken = refreshToken)
         return ResponseEntity.ok(ApiResponse.of(data = result))
     }
