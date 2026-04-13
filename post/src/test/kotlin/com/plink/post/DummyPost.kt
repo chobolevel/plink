@@ -1,6 +1,7 @@
 package com.plink.post
 
 import com.plink.post.application.dto.CreatePostRequest
+import com.plink.post.application.dto.PostResponse
 import com.plink.post.domain.model.Post
 
 object DummyPost {
@@ -21,6 +22,18 @@ object DummyPost {
         ).also { it.id = id }
     }
 
+    private val dummyPostResponse: PostResponse by lazy {
+        PostResponse(
+            id = id,
+            userId = userId,
+            userNickname = userNickname,
+            title = title,
+            content = content,
+            createdAt = createdAt,
+            updatedAt = updatedAt
+        )
+    }
+
     private val dummyCreateRequest: CreatePostRequest by lazy {
         CreatePostRequest(
             userId = userId,
@@ -31,6 +44,8 @@ object DummyPost {
     }
 
     fun toEntity(): Post = dummyPost
+
+    fun toResponse(): PostResponse = dummyPostResponse
 
     fun toCreateRequest(): CreatePostRequest = dummyCreateRequest
 }

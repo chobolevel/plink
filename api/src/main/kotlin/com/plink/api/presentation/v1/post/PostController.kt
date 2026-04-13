@@ -1,13 +1,19 @@
 package com.plink.api.presentation.v1.post
 
 import com.plink.api.common.annotation.AnyAuthorize
+import com.plink.core.presentation.dto.ApiPagingResponse
 import com.plink.core.presentation.dto.ApiResponse
+import com.plink.core.presentation.dto.Paging
+import com.plink.core.presentation.dto.PagingRequest
 import com.plink.post.application.PostService
 import com.plink.post.application.dto.CreatePostRequest
+import com.plink.post.application.dto.SearchPostRequest
+import com.plink.post.infrastructure.persistence.PostQueryFilter
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -29,5 +35,24 @@ class PostController(
     ): ResponseEntity<ApiResponse> {
         val result: String = postService.createPost(request = request)
         return ResponseEntity.ok(ApiResponse.of(data = result))
+    }
+
+    @Operation(summary = "게시글 목록 조회 API")
+    @GetMapping("/posts")
+    fun getPosts(searchRequest: SearchPostRequest, pagingRequest: PagingRequest): ResponseEntity<ApiPagingResponse> {
+        val queryFilter = PostQueryFilter(
+            userId = searchRequest.userId,
+            title = searchRequest.title
+        )
+        val paging = Paging(
+            page = pagingRequest.page ?: 1,
+            size = pagingRequest.size ?: 20
+        )
+        val result: ApiPagingResponse = postService.getPosts(
+            queryFilter = queryFilter,
+            paging = paging,
+            orderTypes = searchRequest.orderTypes ?: emptyList()
+        )
+        return ResponseEntity.ok(result)
     }
 }

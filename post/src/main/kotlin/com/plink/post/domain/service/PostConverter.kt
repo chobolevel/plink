@@ -1,6 +1,8 @@
 package com.plink.post.domain.service
 
+import com.plink.core.extension.toMillis
 import com.plink.post.application.dto.CreatePostRequest
+import com.plink.post.application.dto.PostResponse
 import com.plink.post.domain.model.Post
 import org.springframework.stereotype.Component
 
@@ -15,4 +17,18 @@ class PostConverter {
             content = request.content,
         )
     }
+
+    fun toResponse(post: Post): PostResponse {
+        return PostResponse(
+            id = post.id!!,
+            userId = post.userId,
+            userNickname = post.userNickname,
+            title = post.title,
+            content = post.content,
+            createdAt = post.createdAt!!.toMillis(),
+            updatedAt = post.updatedAt!!.toMillis()
+        )
+    }
+
+    fun toResponseInBatch(posts: List<Post>): List<PostResponse> = posts.map { toResponse(it) }
 }
