@@ -5,4 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface PostJpaRepository : JpaRepository<Post, String>
+interface PostJpaRepository : JpaRepository<Post, String> {
+
+    fun findByIdAndIsDeletedFalse(id: String): Post?
+}

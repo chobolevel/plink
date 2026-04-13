@@ -1,5 +1,7 @@
 package com.plink.post
 
+import com.plink.core.domain.exception.DataNotFoundException
+import com.plink.core.domain.exception.ErrorCode
 import com.plink.core.presentation.dto.ApiPagingResponse
 import com.plink.core.presentation.dto.Paging
 import com.plink.post.application.PostService
@@ -11,6 +13,7 @@ import com.plink.post.domain.repository.PostRepository
 import com.plink.post.domain.service.PostConverter
 import com.plink.post.infrastructure.persistence.PostQueryFilter
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -18,7 +21,6 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.junit.jupiter.MockitoExtension
-import org.springframework.aot.hint.TypeReference.listOf
 
 @DisplayName("PostService unit test")
 @ExtendWith(MockitoExtension::class)
@@ -49,6 +51,37 @@ class PostServiceTest {
 
         // then
         assertThat(result).isEqualTo(dummyPost.id)
+    }
+
+    @Test
+    fun `게시글 단건 조회 성공 테스트`() {
+        // given
+        val postId = "dummyPostId"
+        `when`(postRepository.findById(id = postId)).thenReturn(dummyPost)
+        `when`(postConverter.toResponse(post = dummyPost)).thenReturn(dummyPostResponse)
+
+        // when
+        val result: PostResponse = postService.getPost(postId = postId)
+
+        // then
+        assertThat(result).isEqualTo(dummyPostResponse)
+    }
+
+    @Test
+    fun `게시글 단건 조회 실패 테스트 (존재하지 않는 게시글)`() {
+        // given
+        val invalidPostId = "invalidPostId"
+        `when`(postRepository.findById(id = invalidPostId)).thenThrow(
+            DataNotFoundException(
+                code = ErrorCode.POST_NOT_FOUND,
+                message = ErrorCode.POST_NOT_FOUND.koreanMessage
+            )
+        )
+
+        // when & then
+        assertThatThrownBy { postService.getPost(postId = invalidPostId) }
+            .isInstanceOf(DataNotFoundException::class.java)
+            .hasMessage(ErrorCode.POST_NOT_FOUND.koreanMessage)
     }
 
     @Test

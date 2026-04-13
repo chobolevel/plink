@@ -3,6 +3,7 @@ package com.plink.post.application
 import com.plink.core.presentation.dto.ApiPagingResponse
 import com.plink.core.presentation.dto.Paging
 import com.plink.post.application.dto.CreatePostRequest
+import com.plink.post.application.dto.PostResponse
 import com.plink.post.domain.model.Post
 import com.plink.post.domain.model.PostOrderType
 import com.plink.post.domain.repository.PostRepository
@@ -21,6 +22,12 @@ class PostService(
     fun createPost(request: CreatePostRequest): String {
         val post: Post = postConverter.toEntity(request = request)
         return postRepository.save(post = post).id!!
+    }
+
+    @Transactional(readOnly = true)
+    fun getPost(postId: String): PostResponse {
+        val post: Post = postRepository.findById(id = postId)
+        return postConverter.toResponse(post = post)
     }
 
     @Transactional(readOnly = true)

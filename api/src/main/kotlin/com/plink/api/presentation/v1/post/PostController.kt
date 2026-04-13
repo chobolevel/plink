@@ -7,6 +7,7 @@ import com.plink.core.presentation.dto.Paging
 import com.plink.core.presentation.dto.PagingRequest
 import com.plink.post.application.PostService
 import com.plink.post.application.dto.CreatePostRequest
+import com.plink.post.application.dto.PostResponse
 import com.plink.post.application.dto.SearchPostRequest
 import com.plink.post.infrastructure.persistence.PostQueryFilter
 import io.swagger.v3.oas.annotations.Operation
@@ -14,6 +15,7 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -34,6 +36,16 @@ class PostController(
         request: CreatePostRequest
     ): ResponseEntity<ApiResponse> {
         val result: String = postService.createPost(request = request)
+        return ResponseEntity.ok(ApiResponse.of(data = result))
+    }
+
+    @Operation(summary = "게시글 단건 조회 API")
+    @GetMapping("/posts/{postId}")
+    fun getPost(
+        @PathVariable
+        postId: String
+    ): ResponseEntity<ApiResponse> {
+        val result: PostResponse = postService.getPost(postId = postId)
         return ResponseEntity.ok(ApiResponse.of(data = result))
     }
 

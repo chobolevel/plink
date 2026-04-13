@@ -1,5 +1,7 @@
 package com.plink.post.infrastructure.persistence
 
+import com.plink.core.domain.exception.DataNotFoundException
+import com.plink.core.domain.exception.ErrorCode
 import com.plink.core.presentation.dto.Paging
 import com.plink.post.domain.model.Post
 import com.plink.post.domain.model.PostOrderType
@@ -16,6 +18,13 @@ class PostRepositoryAdapter(
 
     override fun save(post: Post): Post {
         return postJpaRepository.save(post)
+    }
+
+    override fun findById(id: String): Post {
+        return postJpaRepository.findByIdAndIsDeletedFalse(id = id) ?: throw DataNotFoundException(
+            code = ErrorCode.POST_NOT_FOUND,
+            message = ErrorCode.POST_NOT_FOUND.koreanMessage
+        )
     }
 
     override fun searchPosts(
