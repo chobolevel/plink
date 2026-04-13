@@ -23,7 +23,7 @@ class TokenProvider(
 
     fun generateToken(userId: String): JwtResponse {
         val now = Date()
-        val accessTokenExpiredAt = Date(now.time + TimeUnit.MINUTES.toMillis(30))
+        val accessTokenExpiredAt = Date(now.time + TimeUnit.MINUTES.toMillis(10))
         val refreshTokenExpiredAt = Date(now.time + TimeUnit.DAYS.toMillis(7))
         val accessToken: String = generateJwtToken(
             subject = userId,
