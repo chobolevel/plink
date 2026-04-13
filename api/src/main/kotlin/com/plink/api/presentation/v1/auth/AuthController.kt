@@ -1,4 +1,4 @@
-package com.plink.api.presentation.v1
+package com.plink.api.presentation.v1.auth
 
 import com.plink.core.domain.constant.HeaderConstant
 import com.plink.core.presentation.dto.ApiResponse

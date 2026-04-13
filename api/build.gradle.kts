@@ -8,6 +8,7 @@ plugins {
 
 dependencies {
     implementation(project(":user"))
+    implementation(project(":post"))
     // 프로그램 실행 중에 자기 자신의 구조(클래스 이름, 프로퍼티 목록, 어노테이션 정보 등)을 들여다보고 조작할 수 있게 해주는 라이브러리
     // JSON 직렬화/역직렬화, JPA/Hibernate, 어노테이션 기반 로직 등에 필요
     implementation("org.jetbrains.kotlin:kotlin-reflect")

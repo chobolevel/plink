@@ -1,0 +1,33 @@
+package com.plink.api.presentation.v1.post
+
+import com.plink.api.common.annotation.AnyAuthorize
+import com.plink.core.presentation.dto.ApiResponse
+import com.plink.post.application.PostService
+import com.plink.post.application.dto.CreatePostRequest
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.tags.Tag
+import jakarta.validation.Valid
+import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
+
+@Tag(name = "Post(게시글)", description = "게시글 관리 API")
+@RestController
+@RequestMapping("/api/v1")
+class PostController(
+    private val postService: PostService
+) {
+
+    @AnyAuthorize
+    @Operation(summary = "게시글 등록 API")
+    @PostMapping("/posts")
+    fun createPost(
+        @Valid @RequestBody
+        request: CreatePostRequest
+    ): ResponseEntity<ApiResponse> {
+        val result: String = postService.createPost(request = request)
+        return ResponseEntity.ok(ApiResponse.of(data = result))
+    }
+}

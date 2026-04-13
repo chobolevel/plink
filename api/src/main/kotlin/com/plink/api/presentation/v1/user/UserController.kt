@@ -1,4 +1,4 @@
-package com.plink.api.presentation.v1
+package com.plink.api.presentation.v1.user
 
 import com.plink.api.common.annotation.AnyAuthorize
 import com.plink.core.extension.getUserId

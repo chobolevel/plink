@@ -8,23 +8,14 @@ plugins {
 }
 
 dependencies {
-    api("org.springframework.data:spring-data-envers")
-    api("org.springframework.boot:spring-boot-starter-data-jpa")
-    api("org.springframework.boot:spring-boot-starter-validation")
-    api("com.github.f4b6a3:tsid-creator:5.2.6")
+    api(project(":core"))
+    implementation("org.springframework.boot:spring-boot-starter")
 
     // query dsl
     val queryDslVersion = "5.0.0"
-    api("com.querydsl:querydsl-jpa:$queryDslVersion:jakarta")
     kapt("com.querydsl:querydsl-apt:$queryDslVersion:jakarta")
 
-    // jwt
-    implementation("io.jsonwebtoken:jjwt-api:0.12.6")
-    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.6")
-    runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.6")
-
-    // jsoup
-    implementation("org.jsoup:jsoup:1.17.2")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
 allOpen {
