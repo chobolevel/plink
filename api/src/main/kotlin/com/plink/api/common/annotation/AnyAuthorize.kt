@@ -4,5 +4,5 @@ import org.springframework.security.access.prepost.PreAuthorize
 
 @Retention(AnnotationRetention.RUNTIME)
 @Target(AnnotationTarget.FUNCTION)
-@PreAuthorize("hasAnyRole()")
+@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
 annotation class AnyAuthorize()

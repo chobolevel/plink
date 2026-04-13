@@ -2,14 +2,26 @@ package com.plink.api.common.advice
 
 import com.plink.core.domain.exception.ErrorCode
 import com.plink.core.presentation.dto.ErrorResponse
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
+import org.springframework.security.access.AccessDeniedException as SecurityAccessDeniedException
 
 @RestControllerAdvice
 class CustomControllerAdvice {
+
+    @ExceptionHandler(SecurityAccessDeniedException::class)
+    fun accessDeniedExceptionHandler(e: SecurityAccessDeniedException): ResponseEntity<ErrorResponse> {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
+            ErrorResponse.of(
+                code = ErrorCode.FORBIDDEN,
+                message = ErrorCode.FORBIDDEN.koreanMessage
+            )
+        )
+    }
 
     @ExceptionHandler(HttpMessageNotReadableException::class)
     fun httpMessageNotReadableExceptionHandler(e: HttpMessageNotReadableException): ResponseEntity<ErrorResponse> {

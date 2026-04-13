@@ -46,7 +46,7 @@ class OnceAuthorizeFilter(
         return UsernamePasswordAuthenticationToken(
             user.id!!,
             null,
-            AuthorityUtils.createAuthorityList(user.role.name)
+            AuthorityUtils.createAuthorityList(user.role.code)
         ).also { it.details = user }
     }
 }
