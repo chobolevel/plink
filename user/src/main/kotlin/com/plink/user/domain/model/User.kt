@@ -3,9 +3,8 @@ package com.plink.user.domain.model
 import com.plink.core.domain.model.BaseEntity
 import com.plink.core.infrastructure.support.TsidGenerator
 import jakarta.persistence.Column
+import jakarta.persistence.Convert
 import jakarta.persistence.Entity
-import jakarta.persistence.EnumType
-import jakarta.persistence.Enumerated
 import jakarta.persistence.Id
 import jakarta.persistence.Index
 import jakarta.persistence.Table
@@ -45,7 +44,7 @@ class User(
     @Comment("소셜 아이디")
     var socialId: String? = null,
 
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = UserSignUpTypeConverter::class)
     @Column(name = "sign_up_type", length = 20, nullable = false)
     @Comment("회원가입 유형")
     val signUpType: UserSignUpType,
@@ -54,7 +53,7 @@ class User(
     @Comment("닉네임")
     var nickname: String,
 
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = UserRoleTypeConverter::class)
     @Column(name = "role", length = 20, nullable = false)
     @Comment("권한")
     var role: UserRoleType,
