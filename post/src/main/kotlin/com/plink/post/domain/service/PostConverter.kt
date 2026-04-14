@@ -9,9 +9,9 @@ import org.springframework.stereotype.Component
 @Component
 class PostConverter {
 
-    fun toEntity(request: CreatePostRequest): Post {
+    fun toEntity(userId: String, request: CreatePostRequest): Post {
         return Post(
-            userId = request.userId,
+            userId = userId,
             userNickname = request.userNickname,
             title = request.title,
             content = request.content,

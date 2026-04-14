@@ -38,7 +38,6 @@ object DummyPost {
 
     private val dummyCreateRequest: CreatePostRequest by lazy {
         CreatePostRequest(
-            userId = userId,
             userNickname = userNickname,
             title = title,
             content = content,

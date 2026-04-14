@@ -52,12 +52,13 @@ class PostServiceTest {
     @Test
     fun `게시글 등록 테스트`() {
         // given
+        val dummyUserId = "dummyUserId"
         val request: CreatePostRequest = DummyPost.toCreateRequest()
-        `when`(postConverter.toEntity(request = request)).thenReturn(dummyPost)
+        `when`(postConverter.toEntity(userId = dummyUserId, request = request)).thenReturn(dummyPost)
         `when`(postRepository.save(post = dummyPost)).thenReturn(dummyPost)
 
         // when
-        val result: String = postService.createPost(request = request)
+        val result: String = postService.createPost(userId = dummyUserId, request = request)
 
         // then
         assertThat(result).isEqualTo(dummyPost.id)
