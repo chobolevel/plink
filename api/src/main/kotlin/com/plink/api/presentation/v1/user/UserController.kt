@@ -8,7 +8,6 @@ import com.plink.user.application.dto.CreateSocialUserRequest
 import com.plink.user.application.dto.CreateUserRequest
 import com.plink.user.application.dto.UpdateUserRequest
 import com.plink.user.application.dto.UserResponse
-import com.plink.user.domain.service.UserValidator
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
@@ -25,8 +24,7 @@ import java.security.Principal
 @RestController
 @RequestMapping("/api/v1")
 class UserController(
-    private val userService: UserService,
-    private val userValidator: UserValidator
+    private val userService: UserService
 ) {
 
     @Operation(summary = "일반 회원 가입 API")
@@ -65,7 +63,6 @@ class UserController(
         @Valid @RequestBody
         request: UpdateUserRequest
     ): ResponseEntity<ApiResponse> {
-        userValidator.validate(request = request)
         val result: String = userService.updateUser(
             userId = principal.getUserId(),
             request = request
