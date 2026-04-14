@@ -71,7 +71,6 @@ class AuthService(
 
     @Transactional(readOnly = true)
     fun reissue(refreshToken: String): JwtResponse {
-        // 예외를 이걸로 던지는 게 맞을까?
         val isValidRefreshToken: Boolean = tokenProvider.validateToken(token = refreshToken)
         if (!isValidRefreshToken) {
             throw UnAuthorizedException(
@@ -84,6 +83,7 @@ class AuthService(
             message = ErrorCode.INVALID_TOKEN.koreanMessage
         )
         val jwtResponse: JwtResponse = tokenProvider.generateToken(userId = userId)
+        // 현재 access/refresh 토큰이 모두 새롭게 갱신되는데 이부분에 대해서도 고민이 필요함(무한 로그인, rotate)
         cacheRepository.deleteRefreshToken(refreshToken = refreshToken)
         cacheRepository.saveRefreshToken(
             userId = userId,

@@ -13,6 +13,8 @@ data class UpdatePostRequest(
     val updateMask: List<PostUpdateMask>
 ) {
     init {
+        // init 블록에서 던진 예외는 Jackson이 객체를 생성하는 도중 발생
+        // 따라서 Jackson이 이를 잡아서 HttpMessageNotReadableException으로 항상 감싸버림
         updateMask.forEach {
             when (it) {
                 PostUpdateMask.TITLE -> {
