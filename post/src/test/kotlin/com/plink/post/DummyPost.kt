@@ -2,7 +2,9 @@ package com.plink.post
 
 import com.plink.post.application.dto.CreatePostRequest
 import com.plink.post.application.dto.PostResponse
+import com.plink.post.application.dto.UpdatePostRequest
 import com.plink.post.domain.model.Post
+import com.plink.post.domain.model.PostUpdateMask
 
 object DummyPost {
     private const val id: String = "dummyPostId"
@@ -43,9 +45,19 @@ object DummyPost {
         )
     }
 
+    private val dummyUpdateRequest: UpdatePostRequest by lazy {
+        UpdatePostRequest(
+            title = "수정된 제목",
+            content = "수정된 내용",
+            updateMask = listOf(PostUpdateMask.TITLE, PostUpdateMask.CONTENT)
+        )
+    }
+
     fun toEntity(): Post = dummyPost
 
     fun toResponse(): PostResponse = dummyPostResponse
 
     fun toCreateRequest(): CreatePostRequest = dummyCreateRequest
+
+    fun toUpdateRequest(): UpdatePostRequest = dummyUpdateRequest
 }

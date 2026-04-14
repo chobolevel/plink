@@ -4,10 +4,13 @@ import com.plink.core.presentation.dto.ApiPagingResponse
 import com.plink.core.presentation.dto.Paging
 import com.plink.post.application.dto.CreatePostRequest
 import com.plink.post.application.dto.PostResponse
+import com.plink.post.application.dto.UpdatePostRequest
 import com.plink.post.domain.model.Post
 import com.plink.post.domain.model.PostOrderType
 import com.plink.post.domain.repository.PostRepository
 import com.plink.post.domain.service.PostConverter
+import com.plink.post.domain.service.PostUpdater
+import com.plink.post.domain.service.PostValidator
 import com.plink.post.infrastructure.persistence.PostQueryFilter
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -15,7 +18,9 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class PostService(
     private val postRepository: PostRepository,
-    private val postConverter: PostConverter
+    private val postConverter: PostConverter,
+    private val postUpdater: PostUpdater,
+    private val postValidator: PostValidator
 ) {
 
     @Transactional
@@ -50,5 +55,27 @@ class PostService(
             data = postConverter.toResponseInBatch(posts = posts),
             totalCount = totalCount
         )
+    }
+
+    @Transactional
+    fun updatePost(postId: String, userId: String, request: UpdatePostRequest): String {
+        val post: Post = postRepository.findById(id = postId)
+        postValidator.validateOwner(
+            post = post,
+            userId = userId
+        )
+        val updatedPost: Post = postUpdater.markAsUpdate(request = request, post = post)
+        return updatedPost.id!!
+    }
+
+    @Transactional
+    fun deletePost(postId: String, userId: String): Boolean {
+        val post: Post = postRepository.findById(id = postId)
+        postValidator.validateOwner(
+            post = post,
+            userId = userId
+        )
+        post.delete()
+        return true
     }
 }

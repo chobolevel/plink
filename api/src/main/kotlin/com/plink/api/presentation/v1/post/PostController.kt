@@ -1,6 +1,7 @@
 package com.plink.api.presentation.v1.post
 
-import com.plink.api.common.annotation.AnyAuthorize
+import com.plink.api.common.annotation.UserAuthorize
+import com.plink.core.extension.getUserId
 import com.plink.core.presentation.dto.ApiPagingResponse
 import com.plink.core.presentation.dto.ApiResponse
 import com.plink.core.presentation.dto.Paging
@@ -9,17 +10,21 @@ import com.plink.post.application.PostService
 import com.plink.post.application.dto.CreatePostRequest
 import com.plink.post.application.dto.PostResponse
 import com.plink.post.application.dto.SearchPostRequest
+import com.plink.post.application.dto.UpdatePostRequest
 import com.plink.post.infrastructure.persistence.PostQueryFilter
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import java.security.Principal
 
 @Tag(name = "Post(게시글)", description = "게시글 관리 API")
 @RestController
@@ -28,7 +33,7 @@ class PostController(
     private val postService: PostService
 ) {
 
-    @AnyAuthorize
+    @UserAuthorize
     @Operation(summary = "게시글 등록 API")
     @PostMapping("/posts")
     fun createPost(
@@ -66,5 +71,38 @@ class PostController(
             orderTypes = searchRequest.orderTypes ?: emptyList()
         )
         return ResponseEntity.ok(result)
+    }
+
+    @UserAuthorize
+    @Operation(summary = "게시글 수정 API")
+    @PatchMapping("/posts/{postId}")
+    fun updatePost(
+        principal: Principal,
+        @PathVariable
+        postId: String,
+        @Valid @RequestBody
+        request: UpdatePostRequest,
+    ): ResponseEntity<ApiResponse> {
+        val result: String = postService.updatePost(
+            postId = postId,
+            userId = principal.getUserId(),
+            request = request
+        )
+        return ResponseEntity.ok(ApiResponse.of(data = result))
+    }
+
+    @UserAuthorize
+    @Operation(summary = "게시글 삭제 API")
+    @DeleteMapping("/posts/{postId}")
+    fun deletePost(
+        principal: Principal,
+        @PathVariable
+        postId: String,
+    ): ResponseEntity<ApiResponse> {
+        val result: Boolean = postService.deletePost(
+            postId = postId,
+            userId = principal.getUserId()
+        )
+        return ResponseEntity.ok(ApiResponse.of(data = result))
     }
 }

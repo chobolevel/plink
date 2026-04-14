@@ -2,15 +2,19 @@ package com.plink.post
 
 import com.plink.core.domain.exception.DataNotFoundException
 import com.plink.core.domain.exception.ErrorCode
+import com.plink.core.domain.exception.ForbiddenException
 import com.plink.core.presentation.dto.ApiPagingResponse
 import com.plink.core.presentation.dto.Paging
 import com.plink.post.application.PostService
 import com.plink.post.application.dto.CreatePostRequest
 import com.plink.post.application.dto.PostResponse
+import com.plink.post.application.dto.UpdatePostRequest
 import com.plink.post.domain.model.Post
 import com.plink.post.domain.model.PostOrderType
 import com.plink.post.domain.repository.PostRepository
 import com.plink.post.domain.service.PostConverter
+import com.plink.post.domain.service.PostUpdater
+import com.plink.post.domain.service.PostValidator
 import com.plink.post.infrastructure.persistence.PostQueryFilter
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
@@ -35,6 +39,12 @@ class PostServiceTest {
 
     @Mock
     private lateinit var postConverter: PostConverter
+
+    @Mock
+    private lateinit var postUpdater: PostUpdater
+
+    @Mock
+    private lateinit var postValidator: PostValidator
 
     @InjectMocks
     private lateinit var postService: PostService
@@ -124,5 +134,84 @@ class PostServiceTest {
         assertThat(result.size).isEqualTo(paging.size)
         assertThat(result.data).isEqualTo(dummyPostResponses)
         assertThat(result.totalCount).isEqualTo(dummyPostResponses.size.toLong())
+    }
+
+    @Test
+    fun `게시글 수정 성공 테스트`() {
+        // given
+        val postId = "dummyPostId"
+        val userId = "dummyUserId"
+        val request: UpdatePostRequest = DummyPost.toUpdateRequest()
+        `when`(postRepository.findById(id = postId)).thenReturn(dummyPost)
+        `when`(postUpdater.markAsUpdate(request = request, post = dummyPost)).thenReturn(dummyPost)
+
+        // when
+        val result: String = postService.updatePost(postId = postId, userId = userId, request = request)
+
+        // then
+        assertThat(result).isEqualTo(dummyPost.id)
+    }
+
+    @Test
+    fun `게시글 수정 실패 테스트 (권한 없음)`() {
+        // given
+        val postId = "dummyPostId"
+        val userId = "otherUserId"
+        val request: UpdatePostRequest = DummyPost.toUpdateRequest()
+        `when`(postRepository.findById(id = postId)).thenReturn(dummyPost)
+        `when`(
+            postValidator.validateOwner(
+                post = dummyPost,
+                userId = userId
+            )
+        ).thenThrow(
+            ForbiddenException(
+                code = ErrorCode.FORBIDDEN,
+                message = ErrorCode.FORBIDDEN.koreanMessage
+            )
+        )
+
+        // when & then
+        assertThatThrownBy { postService.updatePost(postId = postId, userId = userId, request = request) }
+            .isInstanceOf(ForbiddenException::class.java)
+            .hasMessage(ErrorCode.FORBIDDEN.koreanMessage)
+    }
+
+    @Test
+    fun `게시글 삭제 성공 테스트`() {
+        // given
+        val postId = "dummyPostId"
+        val userId = "dummyUserId"
+        `when`(postRepository.findById(id = postId)).thenReturn(dummyPost)
+
+        // when
+        postService.deletePost(postId = postId, userId = userId)
+
+        // then
+        assertThat(dummyPost.isDeleted).isTrue()
+    }
+
+    @Test
+    fun `게시글 삭제 실패 테스트 (권한 없음)`() {
+        // given
+        val postId = "dummyPostId"
+        val userId = "otherUserId"
+        `when`(postRepository.findById(id = postId)).thenReturn(dummyPost)
+        `when`(
+            postValidator.validateOwner(
+                post = dummyPost,
+                userId = userId
+            )
+        ).thenThrow(
+            ForbiddenException(
+                code = ErrorCode.FORBIDDEN,
+                message = ErrorCode.FORBIDDEN.koreanMessage
+            )
+        )
+
+        // when & then
+        assertThatThrownBy { postService.deletePost(postId = postId, userId = userId) }
+            .isInstanceOf(ForbiddenException::class.java)
+            .hasMessage(ErrorCode.FORBIDDEN.koreanMessage)
     }
 }
