@@ -46,8 +46,8 @@ object DummyPost {
 
     private val dummyUpdateRequest: UpdatePostRequest by lazy {
         UpdatePostRequest(
-            title = "수정된 제목",
-            content = "수정된 내용",
+            title = "변경하고자 하는 새로운 제목입니다.",
+            content = "<h1>변경하고자 하는 새로운 게시글의 내용입니다. 감사합니다.</h1>",
             updateMask = listOf(PostUpdateMask.TITLE, PostUpdateMask.CONTENT)
         )
     }

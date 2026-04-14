@@ -1,9 +1,9 @@
 package com.plink.core.presentation.validator
 
+import com.plink.core.infrastructure.util.HtmlUtil
 import com.plink.core.presentation.annotation.HtmlLength
 import jakarta.validation.ConstraintValidator
 import jakarta.validation.ConstraintValidatorContext
-import org.jsoup.Jsoup
 import org.springframework.stereotype.Component
 
 @Component
@@ -21,10 +21,7 @@ class HtmlLengthValidator : ConstraintValidator<HtmlLength, String> {
     ): Boolean {
         if (value.isNullOrEmpty()) return true
 
-        val length: Int = Jsoup.parse(value)
-            .text()
-            .trim()
-            .length
+        val length: Int = HtmlUtil.extractText(value).length
 
         return length >= minLength
     }
