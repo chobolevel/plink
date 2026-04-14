@@ -37,10 +37,14 @@ class PostController(
     @Operation(summary = "게시글 등록 API")
     @PostMapping("/posts")
     fun createPost(
+        principal: Principal,
         @Valid @RequestBody
         request: CreatePostRequest
     ): ResponseEntity<ApiResponse> {
-        val result: String = postService.createPost(request = request)
+        val result: String = postService.createPost(
+            userId = principal.getUserId(),
+            request = request
+        )
         return ResponseEntity.ok(ApiResponse.of(data = result))
     }
 
