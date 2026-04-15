@@ -2,16 +2,20 @@ package com.plink.user.domain.model
 
 import com.plink.core.domain.model.BaseEntity
 import com.plink.core.infrastructure.support.TsidGenerator
+import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Convert
 import jakarta.persistence.Entity
+import jakarta.persistence.FetchType
 import jakarta.persistence.Id
 import jakarta.persistence.Index
+import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
 import jakarta.persistence.UniqueConstraint
 import org.hibernate.annotations.ColumnDefault
 import org.hibernate.annotations.Comment
 import org.hibernate.envers.Audited
+import org.hibernate.envers.NotAudited
 
 @Entity
 @Table(
@@ -75,7 +79,23 @@ class User(
     @Comment("탈퇴 여부")
     var isResigned: Boolean = false
 
+    @NotAudited
+    @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.EAGER)
+    val userPermissions: MutableSet<UserPermission> = mutableSetOf()
+
     fun resign() {
         this.isResigned = true
+    }
+
+    /* ==============================
+     * 연관관계 편의 메서드
+     * ============================== */
+    fun addUserPermissions(userPermissions: List<UserPermission>) {
+        userPermissions.forEach { userPermission ->
+            if (userPermission !in this.userPermissions) {
+                userPermission.assignUser(user = this)
+                this.userPermissions.add(userPermission)
+            }
+        }
     }
 }

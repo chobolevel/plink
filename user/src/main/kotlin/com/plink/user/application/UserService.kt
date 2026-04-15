@@ -8,8 +8,11 @@ import com.plink.user.application.dto.UpdateUserRequest
 import com.plink.user.application.dto.UserResponse
 import com.plink.user.domain.model.User
 import com.plink.user.domain.model.UserOrderType
+import com.plink.user.domain.model.UserPermission
 import com.plink.user.domain.repository.UserRepository
+import com.plink.user.domain.service.UserAssembler
 import com.plink.user.domain.service.UserConverter
+import com.plink.user.domain.service.UserPermissionGenerator
 import com.plink.user.domain.service.UserUpdater
 import com.plink.user.domain.service.UserValidator
 import com.plink.user.infrastructure.persistence.UserQueryFilter
@@ -21,14 +24,21 @@ class UserService(
     private val userValidator: UserValidator,
     private val userRepository: UserRepository,
     private val userConverter: UserConverter,
-    private val userUpdater: UserUpdater
+    private val userUpdater: UserUpdater,
+    private val userPermissionGenerator: UserPermissionGenerator,
+    private val userAssembler: UserAssembler
 ) {
 
     @Transactional
     fun createUser(request: CreateUserRequest): String {
         userValidator.validate(request = request)
-        val baseUser: User = userConverter.toEntity(request = request)
-        return userRepository.save(user = baseUser).id!!
+        val user: User = userConverter.toEntity(request = request)
+        val userPermissions: List<UserPermission> = userPermissionGenerator.generateUserPermissions(role = user.role)
+        val assembledUser: User = userAssembler.assemble(
+            user = user,
+            userPermissions = userPermissions
+        )
+        return userRepository.save(user = assembledUser).id!!
     }
 
     @Transactional

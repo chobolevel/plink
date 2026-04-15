@@ -11,8 +11,11 @@ import com.plink.user.application.dto.UpdateUserRequest
 import com.plink.user.application.dto.UserResponse
 import com.plink.user.domain.model.User
 import com.plink.user.domain.model.UserOrderType
+import com.plink.user.domain.model.UserPermission
 import com.plink.user.domain.repository.UserRepository
+import com.plink.user.domain.service.UserAssembler
 import com.plink.user.domain.service.UserConverter
+import com.plink.user.domain.service.UserPermissionGenerator
 import com.plink.user.domain.service.UserUpdater
 import com.plink.user.domain.service.UserValidator
 import com.plink.user.infrastructure.persistence.UserQueryFilter
@@ -39,6 +42,8 @@ class UserServiceTest {
 
     private val dummyUserResponse = DummyUser.toResponse()
 
+    private val dummyUserPermission: UserPermission = DummyUserPermission.toEntity()
+
     @Mock
     private lateinit var userValidator: UserValidator
 
@@ -47,6 +52,12 @@ class UserServiceTest {
 
     @Mock
     private lateinit var userConverter: UserConverter
+
+    @Mock
+    private lateinit var userPermissionGenerator: UserPermissionGenerator
+
+    @Mock
+    private lateinit var userAssembler: UserAssembler
 
     @Mock
     private lateinit var userUpdater: UserUpdater
@@ -58,8 +69,20 @@ class UserServiceTest {
     fun `회원 생성`() {
         // given
         val request: CreateUserRequest = DummyUser.toCreateRequest()
+        val dummyUserPermissions: List<UserPermission> = listOf(dummyUserPermission)
         doNothing().`when`(userValidator).validate(request = request)
         `when`(userConverter.toEntity(request = request)).thenReturn(dummyUser)
+        `when`(
+            userPermissionGenerator.generateUserPermissions(
+                role = dummyUser.role
+            )
+        ).thenReturn(dummyUserPermissions)
+        `when`(
+            userAssembler.assemble(
+                user = dummyUser,
+                userPermissions = dummyUserPermissions
+            )
+        ).thenReturn(dummyUser)
         `when`(userRepository.save(user = dummyUser)).thenReturn(dummyUser)
 
         // when

@@ -1,6 +1,5 @@
 package com.plink.api.presentation.v1.user
 
-import com.plink.api.common.annotation.AdminAuthorize
 import com.plink.core.presentation.dto.ApiPagingResponse
 import com.plink.core.presentation.dto.ApiResponse
 import com.plink.core.presentation.dto.Paging
@@ -15,6 +14,7 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -30,8 +30,8 @@ class AdminUserController(
     private val userService: UserService
 ) {
 
+    @PreAuthorize("hasAuthority('USER:MANAGE')")
     @Operation(summary = "회원 등록 API")
-    @AdminAuthorize
     @PostMapping("/users")
     fun createUser(
         @Valid @RequestBody
@@ -41,8 +41,8 @@ class AdminUserController(
         return ResponseEntity.ok(ApiResponse.of(data = result))
     }
 
+    @PreAuthorize("hasAuthority('USER:MANAGE')")
     @Operation(summary = "회원 정보 조회 API")
-    @AdminAuthorize
     @GetMapping("/users/{userId}")
     fun getUser(
         @PathVariable userId: String
@@ -51,8 +51,8 @@ class AdminUserController(
         return ResponseEntity.ok(ApiResponse.of(data = result))
     }
 
+    @PreAuthorize("hasAuthority('USER:MANAGE')")
     @Operation(summary = "회원 정보 목록 조회 API")
-    @AdminAuthorize
     @GetMapping("/users")
     fun getUsers(
         searchRequest: SearchUserRequest,
@@ -77,8 +77,8 @@ class AdminUserController(
         return ResponseEntity.ok(result)
     }
 
+    @PreAuthorize("hasAuthority('USER:MANAGE')")
     @Operation(summary = "회원 정보 수정 API")
-    @AdminAuthorize
     @PatchMapping("/users/{userId}")
     fun updateUser(
         @PathVariable userId: String,
@@ -89,8 +89,8 @@ class AdminUserController(
         return ResponseEntity.ok(ApiResponse.of(data = result))
     }
 
+    @PreAuthorize("hasAuthority('USER:MANAGE')")
     @Operation(summary = "회원 탈퇴 API")
-    @AdminAuthorize
     @PostMapping("/users/{userId}/resign")
     fun resignUser(
         @PathVariable userId: String

@@ -43,10 +43,14 @@ class OnceAuthorizeFilter(
     }
 
     private fun getAuthentication(user: User): UsernamePasswordAuthenticationToken {
+        val role: String = user.role.code
+        val permissions: List<String> = user.userPermissions.map {
+            "${it.resource.code}:${it.action.code}"
+        }
         return UsernamePasswordAuthenticationToken(
             user.id!!,
             null,
-            AuthorityUtils.createAuthorityList(user.role.code)
+            AuthorityUtils.createAuthorityList(permissions + role)
         ).also { it.details = user }
     }
 }

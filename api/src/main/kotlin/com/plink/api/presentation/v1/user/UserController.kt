@@ -1,6 +1,5 @@
 package com.plink.api.presentation.v1.user
 
-import com.plink.api.common.annotation.AnyAuthorize
 import com.plink.core.extension.getUserId
 import com.plink.core.presentation.dto.ApiResponse
 import com.plink.user.application.UserService
@@ -12,6 +11,7 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PostMapping
@@ -47,16 +47,16 @@ class UserController(
         return ResponseEntity.ok(ApiResponse.of(data = result))
     }
 
+    @PreAuthorize("hasAuthority('USER:READ')")
     @Operation(summary = "회원 정보 조회 API(본인)")
-    @AnyAuthorize
     @GetMapping("/user/me")
     fun getMe(principal: Principal): ResponseEntity<ApiResponse> {
         val result: UserResponse = userService.getUser(userId = principal.getUserId())
         return ResponseEntity.ok(ApiResponse.of(data = result))
     }
 
+    @PreAuthorize("hasAuthority('USER:WRITE')")
     @Operation(summary = "회원 정보 수정 API(본인)")
-    @AnyAuthorize
     @PatchMapping("/user/me")
     fun updateMe(
         principal: Principal,
@@ -70,8 +70,8 @@ class UserController(
         return ResponseEntity.ok(ApiResponse.of(data = result))
     }
 
+    @PreAuthorize("hasAuthority('USER:WRITE')")
     @Operation(summary = "회원 탈퇴 API(본인)")
-    @AnyAuthorize
     @PostMapping("/user/me/resign")
     fun resign(principal: Principal): ResponseEntity<ApiResponse> {
         val result: String = userService.resignUser(userId = principal.getUserId())
