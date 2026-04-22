@@ -1,4 +1,4 @@
-package com.plink.user.domain.service
+package com.plink.user.application
 
 import com.plink.user.application.dto.UpdateUserRequest
 import com.plink.user.domain.model.User

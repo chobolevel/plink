@@ -4,7 +4,10 @@ import com.plink.core.domain.exception.DataNotFoundException
 import com.plink.core.domain.exception.ErrorCode
 import com.plink.core.presentation.dto.ApiPagingResponse
 import com.plink.core.presentation.dto.Paging
+import com.plink.user.application.UserConverter
 import com.plink.user.application.UserService
+import com.plink.user.application.UserUpdater
+import com.plink.user.application.UserValidator
 import com.plink.user.application.dto.CreateSocialUserRequest
 import com.plink.user.application.dto.CreateUserRequest
 import com.plink.user.application.dto.UpdateUserRequest
@@ -14,10 +17,7 @@ import com.plink.user.domain.model.UserOrderType
 import com.plink.user.domain.model.UserPermission
 import com.plink.user.domain.repository.UserRepository
 import com.plink.user.domain.service.UserAssembler
-import com.plink.user.domain.service.UserConverter
 import com.plink.user.domain.service.UserPermissionGenerator
-import com.plink.user.domain.service.UserUpdater
-import com.plink.user.domain.service.UserValidator
 import com.plink.user.infrastructure.persistence.UserQueryFilter
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy

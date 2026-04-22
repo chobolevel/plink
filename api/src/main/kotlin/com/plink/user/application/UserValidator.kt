@@ -1,4 +1,4 @@
-package com.plink.user.domain.service
+package com.plink.user.application
 
 import com.plink.core.domain.exception.ErrorCode
 import com.plink.core.domain.exception.PolicyViolationException

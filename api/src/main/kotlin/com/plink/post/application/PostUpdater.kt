@@ -1,4 +1,4 @@
-package com.plink.post.domain.service
+package com.plink.post.application
 
 import com.plink.post.application.dto.UpdatePostRequest
 import com.plink.post.domain.model.Post

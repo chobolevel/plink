@@ -1,4 +1,4 @@
-package com.plink.user.domain.service
+package com.plink.user.application
 
 import com.plink.core.extension.toMillis
 import com.plink.user.application.dto.CreateSocialUserRequest
@@ -7,6 +7,7 @@ import com.plink.user.application.dto.UserResponse
 import com.plink.user.domain.model.User
 import com.plink.user.domain.model.UserRoleType
 import com.plink.user.domain.model.UserSignUpType
+import com.plink.user.domain.service.UserPasswordEncoder
 import org.springframework.stereotype.Component
 
 @Component
