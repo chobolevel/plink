@@ -3,6 +3,5 @@ plugins {
 }
 rootProject.name = "plink"
 include("core")
-include("user")
-include("post")
 include("api")
+include("batch")
