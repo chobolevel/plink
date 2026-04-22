@@ -78,7 +78,6 @@ class UserService(
             request = request,
             user = user
         )
-        // TODO nickname 변경 시 닉네임 변경 이벤트 발행
         return userId
     }
 
