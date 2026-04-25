@@ -1,6 +1,6 @@
 package com.plink.post
 
-import com.plink.post.domain.model.Post
+import com.plink.core.post.domain.model.Post
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test

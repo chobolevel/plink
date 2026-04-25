@@ -1,6 +1,6 @@
 package com.plink.api.infrastructure.persistence.config
 
-import com.plink.core.infrastructure.properties.RedisProperties
+import com.plink.core.common.infrastructure.properties.RedisProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.redis.connection.RedisConnectionFactory

@@ -1,7 +1,7 @@
 package com.plink.user
 
-import com.plink.user.domain.model.User
-import com.plink.user.domain.model.UserPermission
+import com.plink.core.user.domain.model.User
+import com.plink.core.user.domain.model.UserPermission
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test

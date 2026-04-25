@@ -1,18 +1,17 @@
 package com.plink.user
 
-import com.plink.core.domain.exception.BadCredentialException
-import com.plink.core.domain.exception.ErrorCode
-import com.plink.core.domain.exception.UnAuthorizedException
-import com.plink.core.domain.repository.CacheRepository
-import com.plink.core.infrastructure.security.TokenProvider
-import com.plink.core.presentation.dto.JwtResponse
-import com.plink.user.application.AuthService
-import com.plink.user.application.dto.LoginCommonUserRequest
-import com.plink.user.application.dto.LoginSocialUserRequest
-import com.plink.user.domain.model.User
-import com.plink.user.domain.model.UserSignUpType
-import com.plink.user.domain.repository.UserRepository
-import com.plink.user.domain.service.UserPasswordEncoder
+import com.plink.api.user.application.AuthService
+import com.plink.api.user.application.dto.LoginCommonUserRequest
+import com.plink.api.user.application.dto.LoginSocialUserRequest
+import com.plink.core.common.domain.exception.BadCredentialException
+import com.plink.core.common.domain.exception.ErrorCode
+import com.plink.core.common.domain.exception.UnAuthorizedException
+import com.plink.core.common.domain.repository.CacheRepository
+import com.plink.core.common.infrastructure.security.TokenProvider
+import com.plink.core.common.presentation.dto.JwtResponse
+import com.plink.core.user.domain.model.User
+import com.plink.core.user.domain.model.UserSignUpType
+import com.plink.core.user.domain.repository.UserRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.DisplayName
@@ -23,6 +22,7 @@ import org.mockito.Mock
 import org.mockito.Mockito.doNothing
 import org.mockito.Mockito.`when`
 import org.mockito.junit.jupiter.MockitoExtension
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 
 @DisplayName("AuthService unit test")
 @ExtendWith(MockitoExtension::class)
@@ -43,7 +43,7 @@ class AuthServiceTest {
     private lateinit var userRepository: UserRepository
 
     @Mock
-    private lateinit var userPasswordEncoder: UserPasswordEncoder
+    private lateinit var passwordEncoder: BCryptPasswordEncoder
 
     @Mock
     private lateinit var tokenProvider: TokenProvider
@@ -64,10 +64,12 @@ class AuthServiceTest {
                 signUpType = UserSignUpType.COMMON
             )
         ).thenReturn(dummyUser)
-        doNothing().`when`(userPasswordEncoder).match(
-            rawPassword = request.password,
-            encodedPassword = dummyUser.password!!
-        )
+        `when`(
+            passwordEncoder.matches(
+                request.password,
+                dummyUser.password,
+            )
+        ).thenReturn(true)
         `when`(
             tokenProvider.generateToken(
                 userId = dummyUser.id!!
@@ -115,9 +117,9 @@ class AuthServiceTest {
             )
         ).thenReturn(dummyUser)
         `when`(
-            userPasswordEncoder.match(
-                rawPassword = request.password,
-                encodedPassword = dummyUser.password!!
+            passwordEncoder.matches(
+                request.password,
+                dummyUser.password!!
             )
         ).thenThrow(
             BadCredentialException(

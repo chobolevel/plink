@@ -1,10 +1,10 @@
 package com.plink.post
 
-import com.plink.post.application.dto.CreatePostRequest
-import com.plink.post.application.dto.PostResponse
-import com.plink.post.application.dto.UpdatePostRequest
-import com.plink.post.domain.model.Post
-import com.plink.post.domain.model.PostUpdateMask
+import com.plink.api.post.application.dto.CreatePostRequest
+import com.plink.api.post.application.dto.PostResponse
+import com.plink.api.post.application.dto.UpdatePostRequest
+import com.plink.core.post.domain.model.Post
+import com.plink.core.post.domain.model.PostUpdateMask
 
 object DummyPost {
     private const val id: String = "dummyPostId"

@@ -1,8 +1,8 @@
 package com.plink.user
 
-import com.plink.user.domain.model.UserPermission
-import com.plink.user.domain.model.UserPermissionActionType
-import com.plink.user.domain.model.UserPermissionResourceType
+import com.plink.core.user.domain.model.UserPermission
+import com.plink.core.user.domain.model.UserPermissionActionType
+import com.plink.core.user.domain.model.UserPermissionResourceType
 
 object DummyUserPermission {
     private const val id = "user-permission-id"

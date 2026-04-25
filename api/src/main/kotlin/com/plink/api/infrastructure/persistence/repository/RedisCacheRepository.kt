@@ -1,7 +1,7 @@
 package com.plink.api.infrastructure.persistence.repository
 
-import com.plink.core.domain.repository.CacheRepository
-import com.plink.core.infrastructure.properties.JwtProperties
+import com.plink.core.common.domain.repository.CacheRepository
+import com.plink.core.common.infrastructure.properties.JwtProperties
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.stereotype.Repository
 

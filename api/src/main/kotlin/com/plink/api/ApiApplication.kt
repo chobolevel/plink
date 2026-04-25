@@ -5,7 +5,7 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan
 import org.springframework.boot.runApplication
 
 @SpringBootApplication(scanBasePackages = ["com.plink"])
-@ConfigurationPropertiesScan(basePackages = ["com.plink.core.infrastructure.properties"])
+@ConfigurationPropertiesScan(basePackages = ["com.plink.core.common.infrastructure.properties"])
 class ApiApplication
 
 fun main(args: Array<String>) {

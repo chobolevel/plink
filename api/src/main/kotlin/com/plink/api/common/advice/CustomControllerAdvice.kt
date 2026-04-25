@@ -1,9 +1,9 @@
 package com.plink.api.common.advice
 
-import com.plink.core.domain.exception.ErrorCode
-import com.plink.core.domain.exception.InvalidParameterException
-import com.plink.core.domain.exception.UnAuthorizedException
-import com.plink.core.presentation.dto.ErrorResponse
+import com.plink.core.common.domain.exception.ErrorCode
+import com.plink.core.common.domain.exception.InvalidParameterException
+import com.plink.core.common.domain.exception.UnAuthorizedException
+import com.plink.core.common.presentation.dto.ErrorResponse
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.HttpMessageNotReadableException

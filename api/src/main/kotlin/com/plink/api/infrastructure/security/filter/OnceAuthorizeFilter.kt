@@ -1,8 +1,8 @@
 package com.plink.api.infrastructure.security.filter
 
-import com.plink.core.infrastructure.security.TokenProvider
-import com.plink.user.domain.model.User
-import com.plink.user.domain.repository.UserRepository
+import com.plink.core.common.infrastructure.security.TokenProvider
+import com.plink.core.user.domain.model.User
+import com.plink.core.user.domain.repository.UserRepository
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
