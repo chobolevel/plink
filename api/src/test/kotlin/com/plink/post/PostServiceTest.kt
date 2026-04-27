@@ -1,6 +1,7 @@
 package com.plink.post
 
 import com.plink.api.post.application.PostService
+import com.plink.api.post.application.assembler.PostAssembler
 import com.plink.api.post.application.converter.PostConverter
 import com.plink.api.post.application.dto.CreatePostRequest
 import com.plink.api.post.application.dto.PostResponse
@@ -16,6 +17,9 @@ import com.plink.core.post.domain.model.Post
 import com.plink.core.post.domain.model.PostOrderType
 import com.plink.core.post.domain.repository.PostRepository
 import com.plink.core.post.infrastructure.persistence.PostQueryFilter
+import com.plink.core.user.domain.model.User
+import com.plink.core.user.domain.repository.UserRepository
+import com.plink.user.DummyUser
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.DisplayName
@@ -32,13 +36,21 @@ class PostServiceTest {
 
     private val dummyPost: Post = DummyPost.toEntity()
 
+    private val dummyUser: User = DummyUser.toEntity()
+
     private val dummyPostResponse: PostResponse = DummyPost.toResponse()
 
     @Mock
     private lateinit var postRepository: PostRepository
 
     @Mock
+    private lateinit var userRepository: UserRepository
+
+    @Mock
     private lateinit var postConverter: PostConverter
+
+    @Mock
+    private lateinit var postAssembler: PostAssembler
 
     @Mock
     private lateinit var postUpdater: PostUpdater
@@ -55,6 +67,13 @@ class PostServiceTest {
         val dummyUserId = "dummyUserId"
         val request: CreatePostRequest = DummyPost.toCreateRequest()
         `when`(postConverter.toEntity(userId = dummyUserId, request = request)).thenReturn(dummyPost)
+        `when`(userRepository.findById(id = dummyUserId)).thenReturn(dummyUser)
+        `when`(
+            postAssembler.assemble(
+                post = dummyPost,
+                user = dummyUser
+            )
+        ).thenReturn(dummyPost)
         `when`(postRepository.save(post = dummyPost)).thenReturn(dummyPost)
 
         // when

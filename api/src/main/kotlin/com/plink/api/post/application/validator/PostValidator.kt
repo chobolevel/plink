@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component
 class PostValidator {
 
     fun validateOwner(post: Post, userId: String) {
-        if (post.userId != userId) {
+        if (post.user?.id != userId) {
             throw ForbiddenException(
                 code = ErrorCode.FORBIDDEN,
                 message = ErrorCode.FORBIDDEN.koreanMessage

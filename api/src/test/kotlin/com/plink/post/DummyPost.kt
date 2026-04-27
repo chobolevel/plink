@@ -3,13 +3,13 @@ package com.plink.post
 import com.plink.api.post.application.dto.CreatePostRequest
 import com.plink.api.post.application.dto.PostResponse
 import com.plink.api.post.application.dto.UpdatePostRequest
+import com.plink.api.user.application.dto.UserResponse
 import com.plink.core.post.domain.model.Post
 import com.plink.core.post.domain.model.PostUpdateMask
+import com.plink.user.DummyUser
 
 object DummyPost {
     private const val id: String = "dummyPostId"
-    private const val userId: String = "dummyUserId"
-    private const val userNickname: String = "dummyUserNickname"
     private const val title: String = "테스트 게시글 제목"
     private const val content: String = "<h1>테스트 게시글 내용</h1>"
     private const val createdAt: Long = 0L
@@ -17,18 +17,17 @@ object DummyPost {
 
     private val dummyPost: Post by lazy {
         Post(
-            userId = userId,
-            userNickname = userNickname,
             title = title,
             content = content,
         ).also { it.id = id }
     }
 
     private val dummyPostResponse: PostResponse by lazy {
+        val dummyUserResponse: UserResponse = DummyUser.toResponse()
         PostResponse(
             id = id,
-            userId = userId,
-            userNickname = userNickname,
+            userId = dummyUserResponse.id,
+            userNickname = dummyUserResponse.nickname,
             title = title,
             content = content,
             createdAt = createdAt,
@@ -38,7 +37,6 @@ object DummyPost {
 
     private val dummyCreateRequest: CreatePostRequest by lazy {
         CreatePostRequest(
-            userNickname = userNickname,
             title = title,
             content = content,
         )

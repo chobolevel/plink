@@ -5,8 +5,6 @@ import jakarta.validation.constraints.NotEmpty
 import jakarta.validation.constraints.Size
 
 data class CreatePostRequest(
-    @field:NotEmpty(message = "작성자(회원) 닉네임은 필수 값입니다.")
-    var userNickname: String,
     @field:NotEmpty(message = "게시글 제목은 필수 값입니다.")
     @field:Size(min = 10, message = "게시글 제목은 최소 10자 이상이어야 합니다.")
     val title: String,

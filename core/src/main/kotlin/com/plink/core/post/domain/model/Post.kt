@@ -2,10 +2,14 @@ package com.plink.core.post.domain.model
 
 import com.plink.core.common.domain.model.BaseEntity
 import com.plink.core.common.infrastructure.support.TsidGenerator
+import com.plink.core.user.domain.model.User
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
+import jakarta.persistence.FetchType
 import jakarta.persistence.Id
 import jakarta.persistence.Index
+import jakarta.persistence.JoinColumn
+import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.ColumnDefault
 import org.hibernate.annotations.Comment
@@ -24,14 +28,6 @@ import org.hibernate.envers.Audited
 @Comment("게시글 테이블")
 @Audited
 class Post(
-    @Column(name = "user_id", length = 13, nullable = false)
-    @Comment("작성자(회원) 아이디")
-    val userId: String,
-
-    @Column(name = "user_nickname", length = 100, nullable = false)
-    @Comment("작성자(회원) 닉네임")
-    var userNickname: String,
-
     @Column(name = "title", length = 100, nullable = false)
     @Comment("게시글 제목")
     var title: String,
@@ -47,10 +43,20 @@ class Post(
     @Comment("아이디")
     var id: String? = null
 
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    var user: User? = null
+
     @Column(name = "is_deleted", nullable = false, columnDefinition = "TINYINT(1)")
     @ColumnDefault("0")
     @Comment("게시글 삭제 여부")
     var isDeleted: Boolean = false
+
+    fun assignUser(user: User) {
+        if (this.user != user) {
+            this.user = user
+        }
+    }
 
     fun delete() {
         this.isDeleted = true

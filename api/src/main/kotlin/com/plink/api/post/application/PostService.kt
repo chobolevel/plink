@@ -1,5 +1,6 @@
 package com.plink.api.post.application
 
+import com.plink.api.post.application.assembler.PostAssembler
 import com.plink.api.post.application.converter.PostConverter
 import com.plink.api.post.application.dto.CreatePostRequest
 import com.plink.api.post.application.dto.PostResponse
@@ -12,13 +13,17 @@ import com.plink.core.post.domain.model.Post
 import com.plink.core.post.domain.model.PostOrderType
 import com.plink.core.post.domain.repository.PostRepository
 import com.plink.core.post.infrastructure.persistence.PostQueryFilter
+import com.plink.core.user.domain.model.User
+import com.plink.core.user.domain.repository.UserRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
 class PostService(
     private val postRepository: PostRepository,
+    private val userRepository: UserRepository,
     private val postConverter: PostConverter,
+    private val postAssembler: PostAssembler,
     private val postUpdater: PostUpdater,
     private val postValidator: PostValidator
 ) {
@@ -29,7 +34,12 @@ class PostService(
             userId = userId,
             request = request
         )
-        return postRepository.save(post = post).id!!
+        val user: User = userRepository.findById(id = userId)
+        val assembledPost: Post = postAssembler.assemble(
+            post = post,
+            user = user
+        )
+        return postRepository.save(post = assembledPost).id!!
     }
 
     @Transactional(readOnly = true)

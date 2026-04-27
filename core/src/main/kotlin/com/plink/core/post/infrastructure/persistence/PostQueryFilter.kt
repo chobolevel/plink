@@ -10,7 +10,7 @@ data class PostQueryFilter(
 
     fun toBooleanExpressions(): Array<BooleanExpression> {
         return listOfNotNull(
-            userId?.let { post.userId.eq(it) },
+            userId?.let { post.user.id.eq(it) },
             title?.let { post.title.contains(it) },
             post.isDeleted.isFalse
         ).toTypedArray()
