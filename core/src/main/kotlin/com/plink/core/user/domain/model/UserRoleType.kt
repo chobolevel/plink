@@ -6,6 +6,7 @@ enum class UserRoleType(val code: String, val defaultPermissions: Map<UserPermis
         mapOf(
             UserPermissionResourceType.USER to listOf(UserPermissionActionType.READ, UserPermissionActionType.WRITE, UserPermissionActionType.MANAGE),
             UserPermissionResourceType.POST to listOf(UserPermissionActionType.READ, UserPermissionActionType.WRITE, UserPermissionActionType.MANAGE),
+            UserPermissionResourceType.POST_COMMENT to listOf(UserPermissionActionType.READ, UserPermissionActionType.WRITE, UserPermissionActionType.MANAGE),
         )
     ),
     USER(
@@ -13,6 +14,7 @@ enum class UserRoleType(val code: String, val defaultPermissions: Map<UserPermis
         mapOf(
             UserPermissionResourceType.USER to listOf(UserPermissionActionType.READ, UserPermissionActionType.WRITE),
             UserPermissionResourceType.POST to listOf(UserPermissionActionType.READ, UserPermissionActionType.WRITE),
+            UserPermissionResourceType.POST_COMMENT to listOf(UserPermissionActionType.READ, UserPermissionActionType.WRITE),
         )
     );
 

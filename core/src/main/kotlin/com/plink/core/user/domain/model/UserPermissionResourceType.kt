@@ -2,7 +2,8 @@ package com.plink.core.user.domain.model
 
 enum class UserPermissionResourceType(val code: String) {
     USER("USER"),
-    POST("POST");
+    POST("POST"),
+    POST_COMMENT("POST_COMMENT");
 
     companion object {
         fun fromCode(code: String): UserPermissionResourceType {
