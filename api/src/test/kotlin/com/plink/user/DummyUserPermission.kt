@@ -1,5 +1,6 @@
 package com.plink.user
 
+import com.plink.api.user.application.dto.AddUserPermissionRequest
 import com.plink.core.user.domain.model.UserPermission
 import com.plink.core.user.domain.model.UserPermissionActionType
 import com.plink.core.user.domain.model.UserPermissionResourceType
@@ -19,5 +20,14 @@ object DummyUserPermission {
         ).also { it.id = id }
     }
 
+    private val dummyAddUserPermissionRequest: AddUserPermissionRequest by lazy {
+        AddUserPermissionRequest(
+            resource = resource,
+            action = action
+        )
+    }
+
     fun toEntity(): UserPermission = dummyUserPermission
+
+    fun toAddRequest(): AddUserPermissionRequest = dummyAddUserPermissionRequest
 }

@@ -90,12 +90,18 @@ class User(
     /* ==============================
      * 연관관계 편의 메서드
      * ============================== */
-    fun addUserPermissions(userPermissions: List<UserPermission>) {
-        userPermissions.forEach { userPermission ->
-            if (userPermission !in this.userPermissions) {
-                userPermission.assignUser(user = this)
-                this.userPermissions.add(userPermission)
-            }
+    fun addUserPermission(userPermission: UserPermission) {
+        if (!this.userPermissions.contains(userPermission)) {
+            this.userPermissions.add(userPermission)
+            userPermission.assignUser(user = this)
         }
+    }
+
+    fun addUserPermissions(userPermissions: List<UserPermission>) {
+        userPermissions.forEach { userPermission -> this.addUserPermission(userPermission = userPermission) }
+    }
+
+    fun subUserPermissionById(id: String) {
+        this.userPermissions.removeIf { it.id == id }
     }
 }
