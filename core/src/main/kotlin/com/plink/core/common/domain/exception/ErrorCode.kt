@@ -11,6 +11,9 @@ enum class ErrorCode(val koreanMessage: String) {
     // POST
     POST_NOT_FOUND("게시글을 찾을 수 없습니다."),
 
+    // POST COMMENT
+    POST_COMMENT_NOT_FOUND("게시글 댓글을 찾을 수 없습니다."),
+
     // USER
     ALREADY_EXISTS_EMAIL("이미 존재하는 이메일입니다."),
     USER_NOT_FOUND("회원을 찾을 수 없습니다.")

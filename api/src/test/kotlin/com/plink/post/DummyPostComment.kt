@@ -28,7 +28,7 @@ object DummyPostComment {
 
     private val dummyCreatePostCommentRequest: CreatePostCommentRequest by lazy {
         CreatePostCommentRequest(
-            parentId = null,
+            parentId = parentId,
             content = content
         )
     }

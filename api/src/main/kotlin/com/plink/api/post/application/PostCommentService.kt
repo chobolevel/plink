@@ -30,8 +30,10 @@ class PostCommentService(
         val user: User = userRepository.findById(id = userId)
         val post: Post = postRepository.findById(id = postId)
         val postComment: PostComment = postCommentConverter.toEntity(request = request)
+        val parentPostComment: PostComment? = request.parentId?.let { postCommentRepository.findById(id = it) }
         val assembledPostComment: PostComment = postCommentAssembler.assemble(
             postComment = postComment,
+            parentPostComment = parentPostComment,
             post = post,
             user = user
         )

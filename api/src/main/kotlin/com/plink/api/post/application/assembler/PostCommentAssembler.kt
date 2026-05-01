@@ -10,11 +10,13 @@ class PostCommentAssembler {
 
     fun assemble(
         postComment: PostComment,
+        parentPostComment: PostComment?,
         post: Post,
         user: User
     ): PostComment {
         postComment.assignPost(post = post)
         postComment.assignUser(user = user)
+        parentPostComment?.let { postComment.assignParent(postComment = parentPostComment) }
         return postComment
     }
 }
