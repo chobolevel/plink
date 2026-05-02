@@ -35,10 +35,16 @@ class AuthService(
             message = ErrorCode.BAD_CREDENTIAL.koreanMessage
         )
 
-        passwordEncoder.matches(
-            request.password,
-            user.password
-        )
+        if (!passwordEncoder.matches(
+                request.password,
+                user.password
+            )
+        ) {
+            throw BadCredentialException(
+                code = ErrorCode.BAD_CREDENTIAL,
+                message = ErrorCode.BAD_CREDENTIAL.koreanMessage
+            )
+        }
 
         val jwtResponse: JwtResponse = tokenProvider.generateToken(userId = user.id!!)
         cacheRepository.saveRefreshToken(

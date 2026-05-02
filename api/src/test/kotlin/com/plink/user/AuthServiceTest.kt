@@ -121,12 +121,7 @@ class AuthServiceTest {
                 request.password,
                 dummyUser.password!!
             )
-        ).thenThrow(
-            BadCredentialException(
-                code = ErrorCode.BAD_CREDENTIAL,
-                message = ErrorCode.BAD_CREDENTIAL.koreanMessage
-            )
-        )
+        ).thenReturn(false)
 
         // when & then
         assertThatThrownBy { authService.loginUser(request = request) }
