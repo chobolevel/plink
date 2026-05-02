@@ -1,9 +1,12 @@
 package com.plink.api.common.advice
 
 import com.plink.core.common.domain.exception.ErrorCode
+import com.plink.core.common.domain.exception.ForbiddenException
 import com.plink.core.common.domain.exception.InvalidParameterException
 import com.plink.core.common.domain.exception.UnAuthorizedException
 import com.plink.core.common.presentation.dto.ErrorResponse
+import jakarta.servlet.http.HttpServletRequest
+import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.HttpMessageNotReadableException
@@ -14,6 +17,8 @@ import org.springframework.security.access.AccessDeniedException as SecurityAcce
 
 @RestControllerAdvice
 class CustomControllerAdvice {
+
+    private val log = LoggerFactory.getLogger(CustomControllerAdvice::class.java)
 
     @ExceptionHandler(SecurityAccessDeniedException::class)
     fun accessDeniedExceptionHandler(e: SecurityAccessDeniedException): ResponseEntity<ErrorResponse> {
@@ -63,6 +68,27 @@ class CustomControllerAdvice {
             ErrorResponse.of(
                 code = ErrorCode.INVALID_PARAMETER,
                 message = e.message
+            )
+        )
+    }
+
+    @ExceptionHandler(ForbiddenException::class)
+    fun forbiddenExceptionHandler(e: ForbiddenException): ResponseEntity<ErrorResponse> {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
+            ErrorResponse.of(
+                code = ErrorCode.FORBIDDEN,
+                message = ErrorCode.FORBIDDEN.koreanMessage
+            )
+        )
+    }
+
+    @ExceptionHandler(Exception::class)
+    fun exceptionHandler(request: HttpServletRequest, e: Exception): ResponseEntity<ErrorResponse> {
+        log.error("[(${request.method}) ${request.requestURL} ] Internal server error: ${e.message}", e)
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+            ErrorResponse.of(
+                code = ErrorCode.INTERNAL_SERVER_ERROR,
+                message = ErrorCode.INTERNAL_SERVER_ERROR.koreanMessage
             )
         )
     }

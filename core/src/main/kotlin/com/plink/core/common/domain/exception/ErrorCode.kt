@@ -7,6 +7,7 @@ enum class ErrorCode(val koreanMessage: String) {
     INVALID_TOKEN("유효하지 않은 토큰입니다."),
     EXPIRED_TOKEN("만료된 토큰입니다."),
     INVALID_PARAMETER("파라미터가 유효하지 않습니다."),
+    INTERNAL_SERVER_ERROR("내부 서버에서 에러가 발생하였습니다."),
 
     // POST
     POST_NOT_FOUND("게시글을 찾을 수 없습니다."),
