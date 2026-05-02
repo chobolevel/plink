@@ -49,7 +49,7 @@ class PostRepositoryAdapter(
         return this.map {
             when (it) {
                 PostOrderType.CREATED_AT_ASC -> post.createdAt.asc()
-                PostOrderType.CREATED_AT_DESC -> post.updatedAt.desc()
+                PostOrderType.CREATED_AT_DESC -> post.createdAt.desc()
             }
         }.toTypedArray()
     }
