@@ -1,6 +1,7 @@
 package com.plink.user
 
 import com.plink.api.user.application.UserService
+import com.plink.api.user.application.assembler.UserAssembler
 import com.plink.api.user.application.converter.UserConverter
 import com.plink.api.user.application.dto.CreateSocialUserRequest
 import com.plink.api.user.application.dto.CreateUserRequest
@@ -16,7 +17,6 @@ import com.plink.core.user.domain.model.User
 import com.plink.core.user.domain.model.UserOrderType
 import com.plink.core.user.domain.model.UserPermission
 import com.plink.core.user.domain.repository.UserRepository
-import com.plink.core.user.domain.service.UserAssembler
 import com.plink.core.user.domain.service.UserPermissionGenerator
 import com.plink.core.user.infrastructure.persistence.UserQueryFilter
 import org.assertj.core.api.Assertions.assertThat

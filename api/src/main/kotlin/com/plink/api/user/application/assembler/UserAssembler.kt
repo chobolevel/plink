@@ -1,4 +1,4 @@
-package com.plink.core.user.domain.service
+package com.plink.api.user.application.assembler
 
 import com.plink.core.user.domain.model.User
 import com.plink.core.user.domain.model.UserPermission
