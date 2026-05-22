@@ -4,12 +4,21 @@ import com.plink.api.post.application.PostCommentService
 import com.plink.api.post.application.assembler.PostCommentAssembler
 import com.plink.api.post.application.converter.PostCommentConverter
 import com.plink.api.post.application.dto.CreatePostCommentRequest
+import com.plink.api.post.application.dto.PostCommentResponse
+import com.plink.api.post.application.dto.UpdatePostCommentRequest
+import com.plink.api.post.application.updater.PostCommentUpdater
+import com.plink.api.post.application.validator.PostCommentValidator
 import com.plink.core.common.domain.exception.DataNotFoundException
 import com.plink.core.common.domain.exception.ErrorCode
+import com.plink.core.common.domain.exception.ForbiddenException
+import com.plink.core.common.presentation.dto.ApiPagingResponse
+import com.plink.core.common.presentation.dto.Paging
 import com.plink.core.post.domain.model.Post
 import com.plink.core.post.domain.model.PostComment
+import com.plink.core.post.domain.model.PostCommentOrderType
 import com.plink.core.post.domain.repository.PostCommentRepository
 import com.plink.core.post.domain.repository.PostRepository
+import com.plink.core.post.infrastructure.persistence.PostCommentQueryFilter
 import com.plink.core.user.domain.model.User
 import com.plink.core.user.domain.repository.UserRepository
 import com.plink.user.DummyUser
@@ -20,6 +29,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
+import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
 import org.mockito.junit.jupiter.MockitoExtension
 
@@ -30,6 +40,8 @@ class PostCommentServiceTest {
     private val dummyPostComment: PostComment = DummyPostComment.toEntity()
 
     private val dummyParentPostComment: PostComment = DummyPostComment.toParentEntity()
+
+    private val dummyPostCommentResponse: PostCommentResponse = DummyPostComment.toResponse()
 
     private val dummyPost: Post = DummyPost.toEntity()
 
@@ -49,6 +61,12 @@ class PostCommentServiceTest {
 
     @Mock
     private lateinit var postCommentAssembler: PostCommentAssembler
+
+    @Mock
+    private lateinit var postCommentValidator: PostCommentValidator
+
+    @Mock
+    private lateinit var postCommentUpdater: PostCommentUpdater
 
     @InjectMocks
     private lateinit var postCommentService: PostCommentService
@@ -160,5 +178,226 @@ class PostCommentServiceTest {
         }
             .isInstanceOf(DataNotFoundException::class.java)
             .hasMessage(ErrorCode.POST_COMMENT_NOT_FOUND.koreanMessage)
+    }
+
+    @Test
+    fun `게시글 댓글 목록 조회 테스트`() {
+        // given
+        val queryFilter = PostCommentQueryFilter(
+            postId = null,
+            userId = null,
+            parentId = null,
+        )
+        val paging = Paging(
+            page = 1,
+            size = 10
+        )
+        val orderTypes: List<PostCommentOrderType> = emptyList()
+        val dummyPostComments: List<PostComment> = listOf(dummyPostComment)
+        val dummyPostCommentResponses: List<PostCommentResponse> = listOf(dummyPostCommentResponse)
+        `when`(
+            postCommentRepository.searchPostComments(
+                queryFilter = queryFilter,
+                paging = paging,
+                orderTypes = orderTypes
+            )
+        ).thenReturn(dummyPostComments)
+        `when`(
+            postCommentRepository.searchPostCommentsCount(
+                queryFilter = queryFilter,
+            )
+        ).thenReturn(dummyPostComments.size.toLong())
+        `when`(postCommentConverter.toResponseInBatch(postComments = dummyPostComments)).thenReturn(dummyPostCommentResponses)
+
+        // when
+        val result: ApiPagingResponse = postCommentService.getPostComments(
+            queryFilter = queryFilter,
+            paging = paging,
+            orderTypes = orderTypes
+        )
+
+        // then
+        assertThat(result.page).isEqualTo(1)
+        assertThat(result.size).isEqualTo(10)
+        assertThat(result.data).isEqualTo(dummyPostCommentResponses)
+        assertThat(result.totalCount).isEqualTo(dummyPostComments.size.toLong())
+    }
+
+    @Test
+    fun `게시글 댓글 단건 조회 테스트`() {
+        // given
+        val dummyPostCommentId: String = dummyPostComment.id!!
+        val response: PostCommentResponse = DummyPostComment.toResponse()
+        `when`(postCommentRepository.findById(id = dummyPostCommentId)).thenReturn(dummyPostComment)
+        `when`(postCommentConverter.toResponse(postComment = dummyPostComment)).thenReturn(response)
+
+        // when
+        val result: PostCommentResponse = postCommentService.getPostComment(postCommentId = dummyPostCommentId)
+
+        // then
+        assertThat(result).isEqualTo(response)
+    }
+
+    @Test
+    fun `존재하지 않는 게시글 댓글 단건 조회 시 예외 발생`() {
+        // given
+        val dummyPostCommentId: String = "nonExistentCommentId"
+        `when`(postCommentRepository.findById(id = dummyPostCommentId)).thenThrow(
+            DataNotFoundException(
+                code = ErrorCode.POST_COMMENT_NOT_FOUND,
+                message = ErrorCode.POST_COMMENT_NOT_FOUND.koreanMessage
+            )
+        )
+
+        // when & then
+        assertThatThrownBy {
+            postCommentService.getPostComment(postCommentId = dummyPostCommentId)
+        }
+            .isInstanceOf(DataNotFoundException::class.java)
+            .hasMessage(ErrorCode.POST_COMMENT_NOT_FOUND.koreanMessage)
+    }
+
+    @Test
+    fun `게시글 댓글 수정 테스트`() {
+        // given
+        val dummyUserId: String = dummyUser.id!!
+        val dummyPostCommentId: String = dummyPostComment.id!!
+        val request: UpdatePostCommentRequest = DummyPostComment.toUpdateRequest()
+        `when`(postCommentRepository.findById(id = dummyPostCommentId)).thenReturn(dummyPostComment)
+
+        `when`(
+            postCommentUpdater.markAsUpdate(
+                request = request,
+                postComment = dummyPostComment
+            )
+        ).thenReturn(dummyPostComment)
+
+        // when
+        val result: String = postCommentService.updatePostComment(
+            userId = dummyUserId,
+            postCommentId = dummyPostCommentId,
+            request = request
+        )
+
+        // then
+        assertThat(result).isEqualTo(dummyPostCommentId)
+        verify(postCommentValidator).validateOwner(postComment = dummyPostComment, userId = dummyUserId)
+    }
+
+    @Test
+    fun `존재하지 않는 게시글 댓글 수정 시 예외 발생`() {
+        // given
+        val dummyUserId: String = dummyUser.id!!
+        val dummyPostCommentId: String = "nonExistentCommentId"
+        val request: UpdatePostCommentRequest = DummyPostComment.toUpdateRequest()
+        `when`(postCommentRepository.findById(id = dummyPostCommentId)).thenThrow(
+            DataNotFoundException(
+                code = ErrorCode.POST_COMMENT_NOT_FOUND,
+                message = ErrorCode.POST_COMMENT_NOT_FOUND.koreanMessage
+            )
+        )
+
+        // when & then
+        assertThatThrownBy {
+            postCommentService.updatePostComment(
+                userId = dummyUserId,
+                postCommentId = dummyPostCommentId,
+                request = request
+            )
+        }
+            .isInstanceOf(DataNotFoundException::class.java)
+            .hasMessage(ErrorCode.POST_COMMENT_NOT_FOUND.koreanMessage)
+    }
+
+    @Test
+    fun `소유자가 아닌 사용자가 게시글 댓글 수정 시 예외 발생`() {
+        // given
+        val dummyUserId: String = "otherUserId"
+        val dummyPostCommentId: String = dummyPostComment.id!!
+        val request: UpdatePostCommentRequest = DummyPostComment.toUpdateRequest()
+        `when`(postCommentRepository.findById(id = dummyPostCommentId)).thenReturn(dummyPostComment)
+        `when`(postCommentValidator.validateOwner(postComment = dummyPostComment, userId = dummyUserId)).thenThrow(
+            ForbiddenException(
+                code = ErrorCode.FORBIDDEN,
+                message = ErrorCode.FORBIDDEN.koreanMessage
+            )
+        )
+
+        // when & then
+        assertThatThrownBy {
+            postCommentService.updatePostComment(
+                userId = dummyUserId,
+                postCommentId = dummyPostCommentId,
+                request = request
+            )
+        }
+            .isInstanceOf(ForbiddenException::class.java)
+            .hasMessage(ErrorCode.FORBIDDEN.koreanMessage)
+    }
+
+    @Test
+    fun `게시글 댓글 삭제 테스트`() {
+        // given
+        val dummyUserId: String = dummyUser.id!!
+        val dummyPostCommentId: String = dummyPostComment.id!!
+        `when`(postCommentRepository.findById(id = dummyPostCommentId)).thenReturn(dummyPostComment)
+
+        // when
+        val result: Boolean = postCommentService.deletePostComment(
+            userId = dummyUserId,
+            postCommentId = dummyPostCommentId
+        )
+
+        // then
+        assertThat(result).isTrue()
+        assertThat(dummyPostComment.isDeleted).isTrue()
+        verify(postCommentValidator).validateOwner(postComment = dummyPostComment, userId = dummyUserId)
+    }
+
+    @Test
+    fun `존재하지 않는 게시글 댓글 삭제 시 예외 발생`() {
+        // given
+        val dummyUserId: String = dummyUser.id!!
+        val dummyPostCommentId: String = "nonExistentCommentId"
+        `when`(postCommentRepository.findById(id = dummyPostCommentId)).thenThrow(
+            DataNotFoundException(
+                code = ErrorCode.POST_COMMENT_NOT_FOUND,
+                message = ErrorCode.POST_COMMENT_NOT_FOUND.koreanMessage
+            )
+        )
+
+        // when & then
+        assertThatThrownBy {
+            postCommentService.deletePostComment(
+                userId = dummyUserId,
+                postCommentId = dummyPostCommentId
+            )
+        }
+            .isInstanceOf(DataNotFoundException::class.java)
+            .hasMessage(ErrorCode.POST_COMMENT_NOT_FOUND.koreanMessage)
+    }
+
+    @Test
+    fun `소유자가 아닌 사용자가 게시글 댓글 삭제 시 예외 발생`() {
+        // given
+        val dummyUserId: String = "otherUserId"
+        val dummyPostCommentId: String = dummyPostComment.id!!
+        `when`(postCommentRepository.findById(id = dummyPostCommentId)).thenReturn(dummyPostComment)
+        `when`(postCommentValidator.validateOwner(postComment = dummyPostComment, userId = dummyUserId)).thenThrow(
+            ForbiddenException(
+                code = ErrorCode.FORBIDDEN,
+                message = ErrorCode.FORBIDDEN.koreanMessage
+            )
+        )
+
+        // when & then
+        assertThatThrownBy {
+            postCommentService.deletePostComment(
+                userId = dummyUserId,
+                postCommentId = dummyPostCommentId
+            )
+        }
+            .isInstanceOf(ForbiddenException::class.java)
+            .hasMessage(ErrorCode.FORBIDDEN.koreanMessage)
     }
 }

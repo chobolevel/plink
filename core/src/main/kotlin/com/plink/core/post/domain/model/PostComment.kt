@@ -81,4 +81,8 @@ class PostComment(
             this.parent = postComment
         }
     }
+
+    fun delete() {
+        this.isDeleted = true
+    }
 }

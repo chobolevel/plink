@@ -1,7 +1,10 @@
 package com.plink.post
 
 import com.plink.api.post.application.dto.CreatePostCommentRequest
+import com.plink.api.post.application.dto.PostCommentResponse
+import com.plink.api.post.application.dto.UpdatePostCommentRequest
 import com.plink.core.post.domain.model.PostComment
+import com.plink.core.post.domain.model.PostCommentUpdateMask
 
 object DummyPostComment {
     private val id: String = "dummyPostCommentId"
@@ -38,4 +41,19 @@ object DummyPostComment {
     fun toParentEntity(): PostComment = dummyParentPostComment
 
     fun toCreateRequest(): CreatePostCommentRequest = dummyCreatePostCommentRequest
+
+    fun toUpdateRequest(): UpdatePostCommentRequest = UpdatePostCommentRequest(
+        content = "수정된 게시글 댓글",
+        updateMask = listOf(PostCommentUpdateMask.CONTENT)
+    )
+
+    fun toResponse(): PostCommentResponse = PostCommentResponse(
+        id = id,
+        userId = "dummyUserId",
+        userNickname = "dummyNickname",
+        content = content,
+        parentId = parentId,
+        createdAt = createdAt,
+        updatedAt = updatedAt
+    )
 }
