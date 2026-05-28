@@ -1,4 +1,4 @@
-package com.plink.api.infrastructure.persistence.repository
+package com.plink.api.common.repository
 
 import com.plink.core.common.property.JwtProperties
 import com.plink.core.common.repository.CacheRepository

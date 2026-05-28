@@ -1,6 +1,6 @@
-package com.plink.api.infrastructure.security.config
+package com.plink.api.common.config
 
-import com.plink.api.infrastructure.security.filter.OnceAuthorizeFilter
+import com.plink.api.common.filter.OnceAuthorizeFilter
 import com.plink.core.common.security.TokenProvider
 import com.plink.core.user.repository.UserRepository
 import org.springframework.context.annotation.Bean

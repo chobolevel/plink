@@ -1,6 +1,5 @@
 package com.plink.user
 
-import com.plink.api.user.assembler.UserAssembler
 import com.plink.api.user.converter.UserConverter
 import com.plink.api.user.dto.CreateSocialUserRequest
 import com.plink.api.user.dto.CreateUserRequest
@@ -14,10 +13,8 @@ import com.plink.core.common.dto.Paging
 import com.plink.core.common.exception.DataNotFoundException
 import com.plink.core.common.exception.ErrorCode
 import com.plink.core.user.entity.User
-import com.plink.core.user.entity.UserPermission
 import com.plink.core.user.repository.UserQueryFilter
 import com.plink.core.user.repository.UserRepository
-import com.plink.core.user.service.UserPermissionGenerator
 import com.plink.core.user.vo.UserOrderType
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
@@ -42,8 +39,6 @@ class UserServiceTest {
 
     private val dummyUserResponse = DummyUser.toResponse()
 
-    private val dummyUserPermission: UserPermission = DummyUserPermission.toEntity()
-
     @Mock
     private lateinit var userValidator: UserValidator
 
@@ -52,12 +47,6 @@ class UserServiceTest {
 
     @Mock
     private lateinit var userConverter: UserConverter
-
-    @Mock
-    private lateinit var userPermissionGenerator: UserPermissionGenerator
-
-    @Mock
-    private lateinit var userAssembler: UserAssembler
 
     @Mock
     private lateinit var userUpdater: UserUpdater
@@ -69,20 +58,8 @@ class UserServiceTest {
     fun `회원 생성`() {
         // given
         val request: CreateUserRequest = DummyUser.toCreateRequest()
-        val dummyUserPermissions: List<UserPermission> = listOf(dummyUserPermission)
         doNothing().`when`(userValidator).validate(request = request)
         `when`(userConverter.toEntity(request = request)).thenReturn(dummyUser)
-        `when`(
-            userPermissionGenerator.generateUserPermissions(
-                role = dummyUser.role
-            )
-        ).thenReturn(dummyUserPermissions)
-        `when`(
-            userAssembler.assemble(
-                user = dummyUser,
-                userPermissions = dummyUserPermissions
-            )
-        ).thenReturn(dummyUser)
         `when`(userRepository.save(user = dummyUser)).thenReturn(dummyUser)
 
         // when

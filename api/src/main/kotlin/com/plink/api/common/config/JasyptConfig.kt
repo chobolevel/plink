@@ -1,4 +1,4 @@
-package com.plink.api.infrastructure.security.config
+package com.plink.api.common.config
 
 import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties
 import org.jasypt.encryption.StringEncryptor

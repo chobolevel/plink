@@ -1,5 +1,6 @@
 package com.plink.api.post.controller
 
+import com.plink.api.common.annotation.UserOnly
 import com.plink.api.post.dto.CreatePostRequest
 import com.plink.api.post.dto.PostResponse
 import com.plink.api.post.dto.SearchPostRequest
@@ -15,7 +16,6 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
-import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
@@ -33,7 +33,7 @@ class PostController(
     private val postService: PostService
 ) {
 
-    @PreAuthorize("hasAuthority('POST:WRITE')")
+    @UserOnly
     @Operation(summary = "게시글 등록 API")
     @PostMapping("/posts")
     fun createPost(
@@ -77,7 +77,7 @@ class PostController(
         return ResponseEntity.ok(result)
     }
 
-    @PreAuthorize("hasAuthority('POST:WRITE')")
+    @UserOnly
     @Operation(summary = "게시글 수정 API")
     @PatchMapping("/posts/{postId}")
     fun updatePost(
@@ -95,7 +95,7 @@ class PostController(
         return ResponseEntity.ok(ApiResponse.of(data = result))
     }
 
-    @PreAuthorize("hasAuthority('POST:WRITE')")
+    @UserOnly
     @Operation(summary = "게시글 삭제 API")
     @DeleteMapping("/posts/{postId}")
     fun deletePost(

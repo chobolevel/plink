@@ -1,6 +1,5 @@
 package com.plink.api.user.service
 
-import com.plink.api.user.assembler.UserAssembler
 import com.plink.api.user.converter.UserConverter
 import com.plink.api.user.dto.CreateSocialUserRequest
 import com.plink.api.user.dto.CreateUserRequest
@@ -11,10 +10,8 @@ import com.plink.api.user.validator.UserValidator
 import com.plink.core.common.dto.ApiPagingResponse
 import com.plink.core.common.dto.Paging
 import com.plink.core.user.entity.User
-import com.plink.core.user.entity.UserPermission
 import com.plink.core.user.repository.UserQueryFilter
 import com.plink.core.user.repository.UserRepository
-import com.plink.core.user.service.UserPermissionGenerator
 import com.plink.core.user.vo.UserOrderType
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -25,20 +22,13 @@ class UserService(
     private val userRepository: UserRepository,
     private val userConverter: UserConverter,
     private val userUpdater: UserUpdater,
-    private val userPermissionGenerator: UserPermissionGenerator,
-    private val userAssembler: UserAssembler
 ) {
 
     @Transactional
     fun createUser(request: CreateUserRequest): String {
         userValidator.validate(request = request)
         val user: User = userConverter.toEntity(request = request)
-        val userPermissions: List<UserPermission> = userPermissionGenerator.generateUserPermissions(role = user.role)
-        val assembledUser: User = userAssembler.assemble(
-            user = user,
-            userPermissions = userPermissions
-        )
-        return userRepository.save(user = assembledUser).id!!
+        return userRepository.save(user = user).id!!
     }
 
     @Transactional

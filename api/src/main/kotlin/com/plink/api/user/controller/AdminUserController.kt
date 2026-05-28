@@ -1,5 +1,6 @@
 package com.plink.api.user.controller
 
+import com.plink.api.common.annotation.AdminOnly
 import com.plink.api.user.dto.CreateUserRequest
 import com.plink.api.user.dto.SearchUserRequest
 import com.plink.api.user.dto.UpdateUserRequest
@@ -14,7 +15,6 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
-import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -30,7 +30,7 @@ class AdminUserController(
     private val userService: UserService
 ) {
 
-    @PreAuthorize("hasAuthority('USER:MANAGE')")
+    @AdminOnly
     @Operation(summary = "회원 등록 API")
     @PostMapping("/users")
     fun createUser(
@@ -41,7 +41,7 @@ class AdminUserController(
         return ResponseEntity.ok(ApiResponse.of(data = result))
     }
 
-    @PreAuthorize("hasAuthority('USER:MANAGE')")
+    @AdminOnly
     @Operation(summary = "회원 정보 조회 API")
     @GetMapping("/users/{userId}")
     fun getUser(
@@ -51,7 +51,7 @@ class AdminUserController(
         return ResponseEntity.ok(ApiResponse.of(data = result))
     }
 
-    @PreAuthorize("hasAuthority('USER:MANAGE')")
+    @AdminOnly
     @Operation(summary = "회원 정보 목록 조회 API")
     @GetMapping("/users")
     fun getUsers(
@@ -77,7 +77,7 @@ class AdminUserController(
         return ResponseEntity.ok(result)
     }
 
-    @PreAuthorize("hasAuthority('USER:MANAGE')")
+    @AdminOnly
     @Operation(summary = "회원 정보 수정 API")
     @PatchMapping("/users/{userId}")
     fun updateUser(
@@ -89,7 +89,7 @@ class AdminUserController(
         return ResponseEntity.ok(ApiResponse.of(data = result))
     }
 
-    @PreAuthorize("hasAuthority('USER:MANAGE')")
+    @AdminOnly
     @Operation(summary = "회원 탈퇴 API")
     @PostMapping("/users/{userId}/resign")
     fun resignUser(

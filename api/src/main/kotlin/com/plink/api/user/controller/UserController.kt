@@ -1,5 +1,7 @@
 package com.plink.api.user.controller
 
+import com.plink.api.common.annotation.Everyone
+import com.plink.api.common.annotation.UserOnly
 import com.plink.api.user.dto.CreateSocialUserRequest
 import com.plink.api.user.dto.CreateUserRequest
 import com.plink.api.user.dto.UpdateUserRequest
@@ -11,7 +13,6 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
-import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PostMapping
@@ -47,7 +48,7 @@ class UserController(
         return ResponseEntity.ok(ApiResponse.of(data = result))
     }
 
-    @PreAuthorize("hasAuthority('USER:READ')")
+    @Everyone
     @Operation(summary = "회원 정보 조회 API(본인)")
     @GetMapping("/user/me")
     fun getMe(principal: Principal): ResponseEntity<ApiResponse> {
@@ -55,7 +56,7 @@ class UserController(
         return ResponseEntity.ok(ApiResponse.of(data = result))
     }
 
-    @PreAuthorize("hasAuthority('USER:WRITE')")
+    @UserOnly
     @Operation(summary = "회원 정보 수정 API(본인)")
     @PatchMapping("/user/me")
     fun updateMe(
@@ -70,7 +71,7 @@ class UserController(
         return ResponseEntity.ok(ApiResponse.of(data = result))
     }
 
-    @PreAuthorize("hasAuthority('USER:WRITE')")
+    @UserOnly
     @Operation(summary = "회원 탈퇴 API(본인)")
     @PostMapping("/user/me/resign")
     fun resign(principal: Principal): ResponseEntity<ApiResponse> {

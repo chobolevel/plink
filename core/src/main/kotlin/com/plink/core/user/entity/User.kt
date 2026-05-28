@@ -4,20 +4,16 @@ import com.plink.core.common.entity.BaseEntity
 import com.plink.core.common.support.TsidGenerator
 import com.plink.core.user.vo.UserRoleType
 import com.plink.core.user.vo.UserSignUpType
-import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Convert
 import jakarta.persistence.Entity
-import jakarta.persistence.FetchType
 import jakarta.persistence.Id
 import jakarta.persistence.Index
-import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
 import jakarta.persistence.UniqueConstraint
 import org.hibernate.annotations.ColumnDefault
 import org.hibernate.annotations.Comment
 import org.hibernate.envers.Audited
-import org.hibernate.envers.NotAudited
 
 @Entity
 @Table(
@@ -81,29 +77,7 @@ class User(
     @Comment("탈퇴 여부")
     var isResigned: Boolean = false
 
-    @NotAudited
-    @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.EAGER)
-    val userPermissions: MutableSet<UserPermission> = mutableSetOf()
-
     fun resign() {
         this.isResigned = true
-    }
-
-    /* ==============================
-     * 연관관계 편의 메서드
-     * ============================== */
-    fun addUserPermission(userPermission: UserPermission) {
-        if (!this.userPermissions.contains(userPermission)) {
-            this.userPermissions.add(userPermission)
-            userPermission.assignUser(user = this)
-        }
-    }
-
-    fun addUserPermissions(userPermissions: List<UserPermission>) {
-        userPermissions.forEach { userPermission -> this.addUserPermission(userPermission = userPermission) }
-    }
-
-    fun subUserPermissionById(id: String) {
-        this.userPermissions.removeIf { it.id == id }
     }
 }

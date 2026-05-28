@@ -1,5 +1,6 @@
 package com.plink.api.post.controller
 
+import com.plink.api.common.annotation.UserOnly
 import com.plink.api.post.dto.CreatePostCommentRequest
 import com.plink.api.post.dto.PostCommentResponse
 import com.plink.api.post.dto.SearchPostCommentRequest
@@ -15,7 +16,6 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
-import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
@@ -33,8 +33,8 @@ class PostCommentController(
     private val postCommentService: PostCommentService
 ) {
 
+    @UserOnly
     @Operation(summary = "게시글 댓글 등록 API")
-    @PreAuthorize("hasAuthority('POST_COMMENT:WRITE')")
     @PostMapping("/{postId}/comments")
     fun createPostComment(
         principal: Principal,
@@ -84,8 +84,8 @@ class PostCommentController(
         return ResponseEntity.ok(ApiResponse.of(data = result))
     }
 
+    @UserOnly
     @Operation(summary = "게시글 댓글 수정 API")
-    @PreAuthorize("hasAuthority('POST_COMMENT:WRITE')")
     @PatchMapping("/{postId}/comments/{postCommentId}")
     fun updatePostComment(
         principal: Principal,
@@ -102,8 +102,8 @@ class PostCommentController(
         return ResponseEntity.ok(ApiResponse.of(data = result))
     }
 
+    @UserOnly
     @Operation(summary = "게시글 댓글 삭제 API")
-    @PreAuthorize("hasAuthority('POST_COMMENT:WRITE')")
     @DeleteMapping("/{postId}/comments/{postCommentId}")
     fun deletePostComment(
         principal: Principal,
