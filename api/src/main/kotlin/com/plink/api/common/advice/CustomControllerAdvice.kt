@@ -1,10 +1,10 @@
 package com.plink.api.common.advice
 
-import com.plink.core.common.domain.exception.ErrorCode
-import com.plink.core.common.domain.exception.ForbiddenException
-import com.plink.core.common.domain.exception.InvalidParameterException
-import com.plink.core.common.domain.exception.UnAuthorizedException
-import com.plink.core.common.presentation.dto.ErrorResponse
+import com.plink.core.common.dto.ErrorResponse
+import com.plink.core.common.exception.ErrorCode
+import com.plink.core.common.exception.ForbiddenException
+import com.plink.core.common.exception.InvalidParameterException
+import com.plink.core.common.exception.UnAuthorizedException
 import jakarta.servlet.http.HttpServletRequest
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus

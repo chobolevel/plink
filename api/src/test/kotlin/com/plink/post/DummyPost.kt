@@ -1,11 +1,11 @@
 package com.plink.post
 
-import com.plink.api.post.application.dto.CreatePostRequest
-import com.plink.api.post.application.dto.PostResponse
-import com.plink.api.post.application.dto.UpdatePostRequest
-import com.plink.api.user.application.dto.UserResponse
-import com.plink.core.post.domain.model.Post
-import com.plink.core.post.domain.model.PostUpdateMask
+import com.plink.api.post.dto.CreatePostRequest
+import com.plink.api.post.dto.PostResponse
+import com.plink.api.post.dto.UpdatePostRequest
+import com.plink.api.user.dto.UserResponse
+import com.plink.core.post.entity.Post
+import com.plink.core.post.vo.PostUpdateMask
 import com.plink.user.DummyUser
 
 object DummyPost {

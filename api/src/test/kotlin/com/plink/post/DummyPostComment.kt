@@ -1,10 +1,10 @@
 package com.plink.post
 
-import com.plink.api.post.application.dto.CreatePostCommentRequest
-import com.plink.api.post.application.dto.PostCommentResponse
-import com.plink.api.post.application.dto.UpdatePostCommentRequest
-import com.plink.core.post.domain.model.PostComment
-import com.plink.core.post.domain.model.PostCommentUpdateMask
+import com.plink.api.post.dto.CreatePostCommentRequest
+import com.plink.api.post.dto.PostCommentResponse
+import com.plink.api.post.dto.UpdatePostCommentRequest
+import com.plink.core.post.entity.PostComment
+import com.plink.core.post.vo.PostCommentUpdateMask
 
 object DummyPostComment {
     private val id: String = "dummyPostCommentId"

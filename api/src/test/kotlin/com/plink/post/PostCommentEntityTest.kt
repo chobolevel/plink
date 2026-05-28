@@ -1,8 +1,8 @@
 package com.plink.post
 
-import com.plink.core.post.domain.model.Post
-import com.plink.core.post.domain.model.PostComment
-import com.plink.core.user.domain.model.User
+import com.plink.core.post.entity.Post
+import com.plink.core.post.entity.PostComment
+import com.plink.core.user.entity.User
 import com.plink.user.DummyUser
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName

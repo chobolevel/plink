@@ -1,13 +1,13 @@
 package com.plink.user
 
-import com.plink.api.user.application.UserPermissionService
-import com.plink.api.user.application.converter.UserPermissionConverter
-import com.plink.api.user.application.dto.AddUserPermissionRequest
-import com.plink.core.common.domain.exception.DataNotFoundException
-import com.plink.core.common.domain.exception.ErrorCode
-import com.plink.core.user.domain.model.User
-import com.plink.core.user.domain.model.UserPermission
-import com.plink.core.user.domain.repository.UserRepository
+import com.plink.api.user.dto.AddUserPermissionRequest
+import com.plink.api.user.service.UserPermissionService
+import com.plink.api.user.converter.UserPermissionConverter
+import com.plink.core.common.exception.DataNotFoundException
+import com.plink.core.common.exception.ErrorCode
+import com.plink.core.user.entity.User
+import com.plink.core.user.entity.UserPermission
+import com.plink.core.user.repository.UserRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.DisplayName

@@ -1,15 +1,15 @@
 package com.plink.user
 
-import com.plink.api.user.application.dto.CreateSocialUserRequest
-import com.plink.api.user.application.dto.CreateUserRequest
-import com.plink.api.user.application.dto.LoginCommonUserRequest
-import com.plink.api.user.application.dto.LoginSocialUserRequest
-import com.plink.api.user.application.dto.UpdateUserRequest
-import com.plink.api.user.application.dto.UserResponse
-import com.plink.core.user.domain.model.User
-import com.plink.core.user.domain.model.UserRoleType
-import com.plink.core.user.domain.model.UserSignUpType
-import com.plink.core.user.domain.model.UserUpdateMask
+import com.plink.api.user.dto.CreateSocialUserRequest
+import com.plink.api.user.dto.CreateUserRequest
+import com.plink.api.user.dto.LoginCommonUserRequest
+import com.plink.api.user.dto.LoginSocialUserRequest
+import com.plink.api.user.dto.UpdateUserRequest
+import com.plink.api.user.dto.UserResponse
+import com.plink.core.user.entity.User
+import com.plink.core.user.vo.UserRoleType
+import com.plink.core.user.vo.UserSignUpType
+import com.plink.core.user.vo.UserUpdateMask
 
 object DummyUser {
     private const val id: String = "test-user-id"
