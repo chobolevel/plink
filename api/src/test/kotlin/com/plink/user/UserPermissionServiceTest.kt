@@ -1,8 +1,8 @@
 package com.plink.user
 
+import com.plink.api.user.converter.UserPermissionConverter
 import com.plink.api.user.dto.AddUserPermissionRequest
 import com.plink.api.user.service.UserPermissionService
-import com.plink.api.user.converter.UserPermissionConverter
 import com.plink.core.common.exception.DataNotFoundException
 import com.plink.core.common.exception.ErrorCode
 import com.plink.core.user.entity.User

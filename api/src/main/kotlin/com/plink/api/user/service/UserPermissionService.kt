@@ -1,7 +1,7 @@
 package com.plink.api.user.service
 
-import com.plink.api.user.dto.AddUserPermissionRequest
 import com.plink.api.user.converter.UserPermissionConverter
+import com.plink.api.user.dto.AddUserPermissionRequest
 import com.plink.core.user.entity.User
 import com.plink.core.user.entity.UserPermission
 import com.plink.core.user.repository.UserRepository
