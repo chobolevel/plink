@@ -1,6 +1,7 @@
 package com.plink.region
 
 import com.plink.api.region.dto.CreateRegionRequest
+import com.plink.api.region.dto.RegionResponse
 import com.plink.core.region.entity.Region
 
 object DummyRegion {
@@ -23,6 +24,26 @@ object DummyRegion {
         ).also { it.id = id }
     }
 
+    private val dummyRegionResponse: RegionResponse by lazy {
+        RegionResponse(
+            id = id,
+            name = name,
+            sortOrder = sortOrder,
+            createdAt = createdAt,
+            updatedAt = updatedAt,
+        )
+    }
+
+    private val dummyParentRegionResponse: RegionResponse by lazy {
+        RegionResponse(
+            id = parentId,
+            name = parentName,
+            sortOrder = parentSortOrder,
+            createdAt = parentCreatedAt,
+            updatedAt = parentUpdatedAt
+        )
+    }
+
     private val dummyParentRegion: Region by lazy {
         Region(
             name = parentName,
@@ -39,6 +60,10 @@ object DummyRegion {
     fun toEntity(): Region = dummyRegion
 
     fun toParentRegion(): Region = dummyParentRegion
+
+    fun toResponse(): RegionResponse = dummyRegionResponse
+
+    fun toParentResponse(): RegionResponse = dummyParentRegionResponse
 
     fun toCreateRequest(): CreateRegionRequest = dummyCreateRequest
 }

@@ -6,4 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository
 interface RegionJpaRepository : JpaRepository<Region, String> {
 
     fun findByIdAndIsDeletedFalse(id: String): Region?
+
+    fun findAllByParentIsNullAndIsDeletedFalseOrderBySortOrderAsc(): List<Region>
+
+    fun findAllByParentIdAndIsDeletedFalseOrderBySortOrderAsc(parentId: String): List<Region>
 }

@@ -3,6 +3,7 @@ package com.plink.region
 import com.plink.api.region.assembler.RegionAssembler
 import com.plink.api.region.converter.RegionConverter
 import com.plink.api.region.dto.CreateRegionRequest
+import com.plink.api.region.dto.RegionResponse
 import com.plink.api.region.service.RegionService
 import com.plink.core.common.exception.DataNotFoundException
 import com.plink.core.common.exception.ErrorCode
@@ -25,6 +26,10 @@ class RegionServiceTest {
     private val dummyRegion: Region = DummyRegion.toEntity()
 
     private val dummyParentRegion: Region = DummyRegion.toEntity()
+
+    private val dummyRegionResponse: RegionResponse = DummyRegion.toResponse()
+
+    private val dummyParentRegionResponse: RegionResponse = DummyRegion.toParentResponse()
 
     @Mock
     private lateinit var regionConverter: RegionConverter
@@ -75,5 +80,36 @@ class RegionServiceTest {
         assertThatThrownBy { regionService.createRegion(request = request) }
             .isInstanceOf(DataNotFoundException::class.java)
             .hasMessage(ErrorCode.REGION_NOT_FOUND.koreanMessage)
+    }
+
+    @Test
+    fun `지역 목록 조회`() {
+        // given
+        val dummyRegions: List<Region> = listOf(dummyParentRegion)
+        val dummyRegionResponses: List<RegionResponse> = listOf(dummyParentRegionResponse)
+        `when`(regionRepository.findAllByParentId(parentId = null)).thenReturn(dummyRegions)
+        `when`(regionConverter.toResponseInBatch(regions = dummyRegions)).thenReturn(dummyRegionResponses)
+
+        // when
+        val result: List<RegionResponse> = regionService.getRegions(parentId = null)
+
+        // then
+        assertThat(result).isEqualTo(dummyRegionResponses)
+    }
+
+    @Test
+    fun `하위 지역 목록 조회`() {
+        // given
+        val dummyParentRegionId: String = dummyParentRegion.id!!
+        val dummyRegions: List<Region> = listOf(dummyRegion)
+        val dummyRegionResponses: List<RegionResponse> = listOf(dummyRegionResponse)
+        `when`(regionRepository.findAllByParentId(parentId = dummyParentRegionId)).thenReturn(dummyRegions)
+        `when`(regionConverter.toResponseInBatch(regions = dummyRegions)).thenReturn(dummyRegionResponses)
+
+        // when
+        val result: List<RegionResponse> = regionService.getRegions(parentId = dummyParentRegionId)
+
+        // then
+        assertThat(result).isEqualTo(dummyRegionResponses)
     }
 }

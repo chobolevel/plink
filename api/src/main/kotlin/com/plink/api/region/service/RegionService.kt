@@ -3,6 +3,7 @@ package com.plink.api.region.service
 import com.plink.api.region.assembler.RegionAssembler
 import com.plink.api.region.converter.RegionConverter
 import com.plink.api.region.dto.CreateRegionRequest
+import com.plink.api.region.dto.RegionResponse
 import com.plink.core.region.entity.Region
 import com.plink.core.region.repository.RegionRepository
 import org.springframework.stereotype.Service
@@ -12,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional
 class RegionService(
     private val regionConverter: RegionConverter,
     private val regionAssembler: RegionAssembler,
-    private val regionRepository: RegionRepository
+    private val regionRepository: RegionRepository,
 ) {
 
     @Transactional
@@ -23,6 +24,12 @@ class RegionService(
             region = region,
             parentRegion = parentRegion
         )
-        return regionRepository.save(region = region).id!!
+        return regionRepository.save(region = assembledRegion).id!!
+    }
+
+    @Transactional(readOnly = true)
+    fun getRegions(parentId: String? = null): List<RegionResponse> {
+        val regions: List<Region> = regionRepository.findAllByParentId(parentId = parentId)
+        return regionConverter.toResponseInBatch(regions = regions)
     }
 }
