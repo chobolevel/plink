@@ -20,5 +20,6 @@ enum class ErrorCode(val koreanMessage: String) {
     USER_NOT_FOUND("회원을 찾을 수 없습니다."),
 
     // REGION
-    REGION_NOT_FOUND("해당 지역을 찾을 수 없습니다.")
+    REGION_NOT_FOUND("해당 지역을 찾을 수 없습니다."),
+    CIRCULAR_REGION("현재 지역을 부모 지역으로 참조할 수 없습니다.")
 }

@@ -2,7 +2,9 @@ package com.plink.region
 
 import com.plink.api.region.dto.CreateRegionRequest
 import com.plink.api.region.dto.RegionResponse
+import com.plink.api.region.dto.UpdateRegionRequest
 import com.plink.core.region.entity.Region
+import com.plink.core.region.vo.RegionUpdateMask
 
 object DummyRegion {
     private const val id: String = "dummyRegionId"
@@ -57,6 +59,13 @@ object DummyRegion {
         sortOrder = sortOrder,
     )
 
+    private val dummyUpdateRequest: UpdateRegionRequest = UpdateRegionRequest(
+        parentId = null,
+        name = "경기도",
+        sortOrder = null,
+        updateMask = listOf(RegionUpdateMask.NAME)
+    )
+
     fun toEntity(): Region = dummyRegion
 
     fun toParentRegion(): Region = dummyParentRegion
@@ -66,4 +75,6 @@ object DummyRegion {
     fun toParentResponse(): RegionResponse = dummyParentRegionResponse
 
     fun toCreateRequest(): CreateRegionRequest = dummyCreateRequest
+
+    fun toUpdateRequest(): UpdateRegionRequest = dummyUpdateRequest
 }

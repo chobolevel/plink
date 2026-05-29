@@ -2,11 +2,14 @@ package com.plink.api.region.controller
 
 import com.plink.api.common.annotation.AdminOnly
 import com.plink.api.region.dto.CreateRegionRequest
+import com.plink.api.region.dto.UpdateRegionRequest
 import com.plink.api.region.service.RegionService
 import com.plink.core.common.dto.ApiResponse
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.PatchMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -26,6 +29,20 @@ class AdminRegionController(
         request: CreateRegionRequest
     ): ResponseEntity<ApiResponse> {
         val result: String = regionService.createRegion(request)
+        return ResponseEntity.ok(ApiResponse.of(data = result))
+    }
+
+    @AdminOnly
+    @PatchMapping("/regions/{regionId}")
+    fun updateRegion(
+        @PathVariable regionId: String,
+        @Valid @RequestBody
+        request: UpdateRegionRequest
+    ): ResponseEntity<ApiResponse> {
+        val result: String = regionService.updateRegion(
+            regionId = regionId,
+            request = request
+        )
         return ResponseEntity.ok(ApiResponse.of(data = result))
     }
 }

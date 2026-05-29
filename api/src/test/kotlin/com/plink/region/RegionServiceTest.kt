@@ -4,7 +4,10 @@ import com.plink.api.region.assembler.RegionAssembler
 import com.plink.api.region.converter.RegionConverter
 import com.plink.api.region.dto.CreateRegionRequest
 import com.plink.api.region.dto.RegionResponse
+import com.plink.api.region.dto.UpdateRegionRequest
 import com.plink.api.region.service.RegionService
+import com.plink.api.region.updater.RegionUpdater
+import com.plink.api.region.validator.RegionValidator
 import com.plink.core.common.exception.DataNotFoundException
 import com.plink.core.common.exception.ErrorCode
 import com.plink.core.region.entity.Region
@@ -39,6 +42,12 @@ class RegionServiceTest {
 
     @Mock
     private lateinit var regionRepository: RegionRepository
+
+    @Mock
+    private lateinit var regionValidator: RegionValidator
+
+    @Mock
+    private lateinit var regionUpdater: RegionUpdater
 
     @InjectMocks
     private lateinit var regionService: RegionService
@@ -125,5 +134,28 @@ class RegionServiceTest {
 
         // then
         assertThat(result).isEqualTo(dummyRegionResponse)
+    }
+
+    @Test
+    fun `지역 수정 테스트`() {
+        // given
+        val dummyRegionId: String = dummyRegion.id!!
+        val request: UpdateRegionRequest = DummyRegion.toUpdateRequest()
+        `when`(regionRepository.findById(id = dummyRegionId)).thenReturn(dummyRegion)
+        `when`(
+            regionUpdater.markAsUpdate(
+                request = request,
+                region = dummyRegion
+            )
+        ).thenReturn(dummyRegion)
+
+        // when
+        val result: String = regionService.updateRegion(
+            regionId = dummyRegionId,
+            request = request
+        )
+
+        // then
+        assertThat(result).isEqualTo(dummyRegionId)
     }
 }

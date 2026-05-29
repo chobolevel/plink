@@ -4,6 +4,9 @@ import com.plink.api.region.assembler.RegionAssembler
 import com.plink.api.region.converter.RegionConverter
 import com.plink.api.region.dto.CreateRegionRequest
 import com.plink.api.region.dto.RegionResponse
+import com.plink.api.region.dto.UpdateRegionRequest
+import com.plink.api.region.updater.RegionUpdater
+import com.plink.api.region.validator.RegionValidator
 import com.plink.core.region.entity.Region
 import com.plink.core.region.repository.RegionRepository
 import org.springframework.stereotype.Service
@@ -14,6 +17,8 @@ class RegionService(
     private val regionConverter: RegionConverter,
     private val regionAssembler: RegionAssembler,
     private val regionRepository: RegionRepository,
+    private val regionValidator: RegionValidator,
+    private val regionUpdater: RegionUpdater
 ) {
 
     @Transactional
@@ -37,5 +42,16 @@ class RegionService(
     fun getRegion(regionId: String): RegionResponse {
         val region: Region = regionRepository.findById(regionId)
         return regionConverter.toResponse(region)
+    }
+
+    @Transactional
+    fun updateRegion(regionId: String, request: UpdateRegionRequest): String {
+        regionValidator.validate(regionId = regionId, request = request)
+        val region: Region = regionRepository.findById(regionId)
+        regionUpdater.markAsUpdate(
+            request = request,
+            region = region
+        )
+        return regionId
     }
 }
