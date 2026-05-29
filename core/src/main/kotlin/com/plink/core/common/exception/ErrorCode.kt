@@ -17,5 +17,8 @@ enum class ErrorCode(val koreanMessage: String) {
 
     // USER
     ALREADY_EXISTS_EMAIL("이미 존재하는 이메일입니다."),
-    USER_NOT_FOUND("회원을 찾을 수 없습니다.")
+    USER_NOT_FOUND("회원을 찾을 수 없습니다."),
+
+    // REGION
+    REGION_NOT_FOUND("해당 지역을 찾을 수 없습니다.")
 }
