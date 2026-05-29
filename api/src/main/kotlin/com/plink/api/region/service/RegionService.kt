@@ -54,4 +54,11 @@ class RegionService(
         )
         return regionId
     }
+
+    @Transactional
+    fun deleteRegion(regionId: String): Boolean {
+        val region: Region = regionRepository.findById(regionId)
+        region.delete()
+        return true
+    }
 }

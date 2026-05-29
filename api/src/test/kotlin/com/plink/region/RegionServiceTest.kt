@@ -158,4 +158,17 @@ class RegionServiceTest {
         // then
         assertThat(result).isEqualTo(dummyRegionId)
     }
+
+    @Test
+    fun `지역 삭제 테스트`() {
+        // given
+        val dummyRegionId: String = dummyRegion.id!!
+        `when`(regionRepository.findById(id = dummyRegionId)).thenReturn(dummyRegion)
+
+        // when
+        val result: Boolean = regionService.deleteRegion(regionId = dummyRegionId)
+
+        // then
+        assertThat(result).isTrue
+    }
 }

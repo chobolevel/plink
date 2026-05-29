@@ -8,6 +8,7 @@ import com.plink.core.common.dto.ApiResponse
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -43,6 +44,15 @@ class AdminRegionController(
             regionId = regionId,
             request = request
         )
+        return ResponseEntity.ok(ApiResponse.of(data = result))
+    }
+
+    @AdminOnly
+    @DeleteMapping("/regions/{regionId}")
+    fun deleteRegion(
+        @PathVariable regionId: String
+    ): ResponseEntity<ApiResponse> {
+        val result: Boolean = regionService.deleteRegion(regionId)
         return ResponseEntity.ok(ApiResponse.of(data = result))
     }
 }
