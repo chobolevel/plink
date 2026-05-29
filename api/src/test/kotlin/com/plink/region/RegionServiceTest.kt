@@ -83,7 +83,7 @@ class RegionServiceTest {
     }
 
     @Test
-    fun `지역 목록 조회`() {
+    fun `지역 목록 조회 테스트`() {
         // given
         val dummyRegions: List<Region> = listOf(dummyParentRegion)
         val dummyRegionResponses: List<RegionResponse> = listOf(dummyParentRegionResponse)
@@ -98,7 +98,7 @@ class RegionServiceTest {
     }
 
     @Test
-    fun `하위 지역 목록 조회`() {
+    fun `하위 지역 목록 조회 테스트`() {
         // given
         val dummyParentRegionId: String = dummyParentRegion.id!!
         val dummyRegions: List<Region> = listOf(dummyRegion)
@@ -111,5 +111,19 @@ class RegionServiceTest {
 
         // then
         assertThat(result).isEqualTo(dummyRegionResponses)
+    }
+
+    @Test
+    fun `지역 단건 조회 테스트`() {
+        // given
+        val dummyRegionId: String = dummyRegion.id!!
+        `when`(regionRepository.findById(id = dummyRegionId)).thenReturn(dummyRegion)
+        `when`(regionConverter.toResponse(region = dummyRegion)).thenReturn(dummyRegionResponse)
+
+        // when
+        val result: RegionResponse = regionService.getRegion(regionId = dummyRegionId)
+
+        // then
+        assertThat(result).isEqualTo(dummyRegionResponse)
     }
 }

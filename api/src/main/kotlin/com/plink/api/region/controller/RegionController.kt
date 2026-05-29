@@ -26,9 +26,16 @@ class RegionController(
     }
 
     @Operation(summary = "하위 지역 목록 조회 API")
-    @GetMapping("/regions/{regionId}")
+    @GetMapping("/regions/{regionId}/districts")
     fun getSubRegions(@PathVariable regionId: String): ResponseEntity<ApiResponse> {
         val result: List<RegionResponse> = regionService.getRegions(parentId = regionId)
+        return ResponseEntity.ok(ApiResponse.of(data = result))
+    }
+
+    @Operation(summary = "지역 단건 조회 API")
+    @GetMapping("/regions/{regionId}")
+    fun getRegion(@PathVariable regionId: String): ResponseEntity<ApiResponse> {
+        val result: RegionResponse = regionService.getRegion(regionId = regionId)
         return ResponseEntity.ok(ApiResponse.of(data = result))
     }
 }

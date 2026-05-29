@@ -32,4 +32,10 @@ class RegionService(
         val regions: List<Region> = regionRepository.findAllByParentId(parentId = parentId)
         return regionConverter.toResponseInBatch(regions = regions)
     }
+
+    @Transactional(readOnly = true)
+    fun getRegion(regionId: String): RegionResponse {
+        val region: Region = regionRepository.findById(regionId)
+        return regionConverter.toResponse(region)
+    }
 }
