@@ -24,4 +24,12 @@ class RedisCacheRepository(
     override fun deleteRefreshToken(refreshToken: String) {
         opsForHash.delete(jwtProperties.cacheKey, refreshToken)
     }
+
+    override fun set(key: String, value: String, duration: Long) {
+        redisTemplate.opsForValue().set(key, value, duration)
+    }
+
+    override fun get(key: String): String? {
+        return redisTemplate.opsForValue().get(key)
+    }
 }

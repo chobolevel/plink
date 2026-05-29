@@ -6,4 +6,8 @@ interface CacheRepository {
     fun findUserIdByRefreshToken(refreshToken: String): String?
 
     fun deleteRefreshToken(refreshToken: String)
+
+    fun set(key: String, value: String, duration: Long)
+
+    fun get(key: String): String?
 }
