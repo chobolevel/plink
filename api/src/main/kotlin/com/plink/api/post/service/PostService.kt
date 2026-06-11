@@ -31,7 +31,6 @@ class PostService(
     @Transactional
     fun createPost(userId: String, request: CreatePostRequest): String {
         val post: Post = postConverter.toEntity(
-            userId = userId,
             request = request
         )
         val user: User = userRepository.findById(id = userId)

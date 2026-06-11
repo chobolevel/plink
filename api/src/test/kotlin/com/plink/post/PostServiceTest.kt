@@ -66,7 +66,7 @@ class PostServiceTest {
         // given
         val dummyUserId = "dummyUserId"
         val request: CreatePostRequest = DummyPost.toCreateRequest()
-        `when`(postConverter.toEntity(userId = dummyUserId, request = request)).thenReturn(dummyPost)
+        `when`(postConverter.toEntity(request = request)).thenReturn(dummyPost)
         `when`(userRepository.findById(id = dummyUserId)).thenReturn(dummyUser)
         `when`(
             postAssembler.assemble(

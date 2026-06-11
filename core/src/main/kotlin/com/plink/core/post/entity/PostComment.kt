@@ -28,12 +28,12 @@ import org.hibernate.envers.Audited
             columnList = "post_id"
         ),
         Index(
-            name = "post_ocmments_user_id_fk",
+            name = "post_comments_user_id_fk",
             columnList = "user_id"
         )
     ]
 )
-@Comment("게시글 테이블")
+@Comment("게시글 댓글 테이블")
 @Audited
 class PostComment(
     @Column(name = "content", length = 255, nullable = false)

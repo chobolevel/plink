@@ -21,7 +21,7 @@ import org.hibernate.envers.Audited
     indexes = [
         Index(
             name = "posts_user_id_fk",
-            columnList = "writer_id"
+            columnList = "user_id"
         )
     ]
 )
