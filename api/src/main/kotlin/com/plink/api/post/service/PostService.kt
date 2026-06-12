@@ -71,6 +71,7 @@ class PostService(
 
     @Transactional
     fun updatePost(postId: String, userId: String, request: UpdatePostRequest): String {
+        postValidator.validate(request = request)
         val post: Post = postRepository.findById(id = postId)
         postValidator.validateOwner(
             post = post,

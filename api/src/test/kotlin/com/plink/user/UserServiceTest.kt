@@ -12,6 +12,7 @@ import com.plink.core.common.dto.ApiPagingResponse
 import com.plink.core.common.dto.Paging
 import com.plink.core.common.exception.DataNotFoundException
 import com.plink.core.common.exception.ErrorCode
+import com.plink.core.common.exception.InvalidParameterException
 import com.plink.core.user.entity.User
 import com.plink.core.user.repository.UserQueryFilter
 import com.plink.core.user.repository.UserRepository
@@ -24,6 +25,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.doNothing
+import org.mockito.Mockito.doThrow
 import org.mockito.Mockito.`when`
 import org.mockito.junit.jupiter.MockitoExtension
 
@@ -160,6 +162,7 @@ class UserServiceTest {
         // given
         val dummyUserId: String = dummyUser.id!!
         val request: UpdateUserRequest = DummyUser.toUpdateRequest()
+        doNothing().`when`(userValidator).validate(request = request)
         `when`(userRepository.findById(id = dummyUserId)).thenReturn(dummyUser)
         `when`(
             userUpdater.markAsUpdate(
@@ -179,9 +182,28 @@ class UserServiceTest {
     }
 
     @Test
+    fun `회원 정보 수정 실패 테스트 (파라미터 유효성 검사 실패)`() {
+        // given
+        val dummyUserId: String = dummyUser.id!!
+        val request: UpdateUserRequest = DummyUser.toUpdateRequest()
+        doThrow(
+            InvalidParameterException(
+                code = ErrorCode.INVALID_PARAMETER,
+                message = ErrorCode.INVALID_PARAMETER.koreanMessage
+            )
+        ).`when`(userValidator).validate(request = request)
+
+        // when & then
+        assertThatThrownBy { userService.updateUser(userId = dummyUserId, request = request) }
+            .isInstanceOf(InvalidParameterException::class.java)
+            .hasMessage(ErrorCode.INVALID_PARAMETER.koreanMessage)
+    }
+
+    @Test
     fun `회원 정보 수정 시 존재하지 않는 회원 예외 발생`() {
         // given
         val request: UpdateUserRequest = DummyUser.toUpdateRequest()
+        doNothing().`when`(userValidator).validate(request = request)
         `when`(userRepository.findById(id = invalidUserId)).thenThrow(
             DataNotFoundException(
                 code = ErrorCode.USER_NOT_FOUND,

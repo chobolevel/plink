@@ -13,6 +13,7 @@ import com.plink.core.common.dto.Paging
 import com.plink.core.common.exception.DataNotFoundException
 import com.plink.core.common.exception.ErrorCode
 import com.plink.core.common.exception.ForbiddenException
+import com.plink.core.common.exception.InvalidParameterException
 import com.plink.core.post.entity.Post
 import com.plink.core.post.entity.PostComment
 import com.plink.core.post.repository.PostCommentQueryFilter
@@ -29,6 +30,8 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
+import org.mockito.Mockito.doNothing
+import org.mockito.Mockito.doThrow
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
 import org.mockito.junit.jupiter.MockitoExtension
@@ -263,8 +266,8 @@ class PostCommentServiceTest {
         val dummyUserId: String = dummyUser.id!!
         val dummyPostCommentId: String = dummyPostComment.id!!
         val request: UpdatePostCommentRequest = DummyPostComment.toUpdateRequest()
+        doNothing().`when`(postCommentValidator).validate(request = request)
         `when`(postCommentRepository.findById(id = dummyPostCommentId)).thenReturn(dummyPostComment)
-
         `when`(
             postCommentUpdater.markAsUpdate(
                 request = request,
@@ -285,11 +288,37 @@ class PostCommentServiceTest {
     }
 
     @Test
+    fun `게시글 댓글 수정 실패 테스트 (파라미터 유효성 검사 실패)`() {
+        // given
+        val dummyUserId: String = dummyUser.id!!
+        val dummyPostCommentId: String = dummyPostComment.id!!
+        val request: UpdatePostCommentRequest = DummyPostComment.toUpdateRequest()
+        doThrow(
+            InvalidParameterException(
+                code = ErrorCode.INVALID_PARAMETER,
+                message = ErrorCode.INVALID_PARAMETER.koreanMessage
+            )
+        ).`when`(postCommentValidator).validate(request = request)
+
+        // when & then
+        assertThatThrownBy {
+            postCommentService.updatePostComment(
+                userId = dummyUserId,
+                postCommentId = dummyPostCommentId,
+                request = request
+            )
+        }
+            .isInstanceOf(InvalidParameterException::class.java)
+            .hasMessage(ErrorCode.INVALID_PARAMETER.koreanMessage)
+    }
+
+    @Test
     fun `존재하지 않는 게시글 댓글 수정 시 예외 발생`() {
         // given
         val dummyUserId: String = dummyUser.id!!
         val dummyPostCommentId: String = "nonExistentCommentId"
         val request: UpdatePostCommentRequest = DummyPostComment.toUpdateRequest()
+        doNothing().`when`(postCommentValidator).validate(request = request)
         `when`(postCommentRepository.findById(id = dummyPostCommentId)).thenThrow(
             DataNotFoundException(
                 code = ErrorCode.POST_COMMENT_NOT_FOUND,
@@ -315,6 +344,7 @@ class PostCommentServiceTest {
         val dummyUserId: String = "otherUserId"
         val dummyPostCommentId: String = dummyPostComment.id!!
         val request: UpdatePostCommentRequest = DummyPostComment.toUpdateRequest()
+        doNothing().`when`(postCommentValidator).validate(request = request)
         `when`(postCommentRepository.findById(id = dummyPostCommentId)).thenReturn(dummyPostComment)
         `when`(postCommentValidator.validateOwner(postComment = dummyPostComment, userId = dummyUserId)).thenThrow(
             ForbiddenException(

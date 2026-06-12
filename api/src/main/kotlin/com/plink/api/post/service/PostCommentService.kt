@@ -82,6 +82,7 @@ class PostCommentService(
         postCommentId: String,
         request: UpdatePostCommentRequest
     ): String {
+        postCommentValidator.validate(request = request)
         val postComment: PostComment = postCommentRepository.findById(id = postCommentId)
         postCommentValidator.validateOwner(
             postComment = postComment,

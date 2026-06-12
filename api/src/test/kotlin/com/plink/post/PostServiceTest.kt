@@ -13,6 +13,7 @@ import com.plink.core.common.dto.Paging
 import com.plink.core.common.exception.DataNotFoundException
 import com.plink.core.common.exception.ErrorCode
 import com.plink.core.common.exception.ForbiddenException
+import com.plink.core.common.exception.InvalidParameterException
 import com.plink.core.post.entity.Post
 import com.plink.core.post.repository.PostQueryFilter
 import com.plink.core.post.repository.PostRepository
@@ -27,6 +28,8 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
+import org.mockito.Mockito.doNothing
+import org.mockito.Mockito.doThrow
 import org.mockito.Mockito.`when`
 import org.mockito.junit.jupiter.MockitoExtension
 
@@ -122,6 +125,7 @@ class PostServiceTest {
         val queryFilter = PostQueryFilter(
             userId = null,
             title = null,
+            isDeleted = false
         )
         val paging = Paging(
             page = 1,
@@ -162,6 +166,7 @@ class PostServiceTest {
         val postId = "dummyPostId"
         val userId = "dummyUserId"
         val request: UpdatePostRequest = DummyPost.toUpdateRequest()
+        doNothing().`when`(postValidator).validate(request = request)
         `when`(postRepository.findById(id = postId)).thenReturn(dummyPost)
         `when`(postUpdater.markAsUpdate(request = request, post = dummyPost)).thenReturn(dummyPost)
 
@@ -173,11 +178,31 @@ class PostServiceTest {
     }
 
     @Test
+    fun `게시글 수정 실패 테스트 (파라미터 유효성 검사 실패)`() {
+        // given
+        val postId = "dummyPostId"
+        val userId = "dummyUserId"
+        val request: UpdatePostRequest = DummyPost.toUpdateRequest()
+        doThrow(
+            InvalidParameterException(
+                code = ErrorCode.INVALID_PARAMETER,
+                message = ErrorCode.INVALID_PARAMETER.koreanMessage
+            )
+        ).`when`(postValidator).validate(request = request)
+
+        // when & then
+        assertThatThrownBy { postService.updatePost(postId = postId, userId = userId, request = request) }
+            .isInstanceOf(InvalidParameterException::class.java)
+            .hasMessage(ErrorCode.INVALID_PARAMETER.koreanMessage)
+    }
+
+    @Test
     fun `게시글 수정 실패 테스트 (권한 없음)`() {
         // given
         val postId = "dummyPostId"
         val userId = "otherUserId"
         val request: UpdatePostRequest = DummyPost.toUpdateRequest()
+        doNothing().`when`(postValidator).validate(request = request)
         `when`(postRepository.findById(id = postId)).thenReturn(dummyPost)
         `when`(
             postValidator.validateOwner(

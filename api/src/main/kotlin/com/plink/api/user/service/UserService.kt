@@ -66,6 +66,7 @@ class UserService(
 
     @Transactional
     fun updateUser(userId: String, request: UpdateUserRequest): String {
+        userValidator.validate(request = request)
         val user: User = userRepository.findById(id = userId)
         userUpdater.markAsUpdate(
             request = request,
