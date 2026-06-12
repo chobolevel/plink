@@ -17,6 +17,8 @@ jwt:
   issuer: ENC(IMwo1Tw7iNk3A6jXShGRktiAyrr4so02)
   secret: ENC(d1SbIB09QTW6PQ6NzhSSc5LLaA21F9NbcMYi7LeECBH4ucm+LyQib/N6Dqjyaouc9iTv4iakQHU=)
   cache-key: ENC(jX48JLxlH3OVrbREicVYd2tk4wf2vX9bnba4bqM9Du8=)
+  access-token-expiry-seconds: 600 # 10분
+  refresh-token-expiry-seconds: 604800 # 7일
 
 # REDIS
 redis:

@@ -20,6 +20,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.doNothing
+import org.mockito.Mockito.doThrow
 import org.mockito.Mockito.`when`
 import org.mockito.junit.jupiter.MockitoExtension
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
@@ -178,7 +179,7 @@ class AuthServiceTest {
         // given
         val dummyUserId: String = dummyUser.id!!
         val dummyRefreshToken = "refresh-token"
-        `when`(tokenProvider.validateToken(token = dummyRefreshToken)).thenReturn(true)
+        doNothing().`when`(tokenProvider).validateToken(token = dummyRefreshToken)
         `when`(cacheRepository.findUserIdByRefreshToken(refreshToken = dummyRefreshToken)).thenReturn(dummyUserId)
         `when`(tokenProvider.generateToken(userId = dummyUserId)).thenReturn(dummyJwtResponse)
 
@@ -191,10 +192,15 @@ class AuthServiceTest {
     }
 
     @Test
-    fun `토큰 갱신 시 유효하지 않은 토큰 예외 발생`() {
+    fun `토큰 갱신 시 위변조된 토큰으로 예외 발생`() {
         // given
         val dummyRefreshToken = "refresh-token"
-        `when`(tokenProvider.validateToken(token = dummyRefreshToken)).thenReturn(false)
+        doThrow(
+            UnAuthorizedException(
+                code = ErrorCode.INVALID_TOKEN,
+                message = ErrorCode.INVALID_TOKEN.koreanMessage
+            )
+        ).`when`(tokenProvider).validateToken(token = dummyRefreshToken)
 
         // when & then
         assertThatThrownBy { authService.reissue(refreshToken = dummyRefreshToken) }
@@ -203,10 +209,27 @@ class AuthServiceTest {
     }
 
     @Test
+    fun `토큰 갱신 시 만료된 토큰으로 예외 발생`() {
+        // given
+        val dummyRefreshToken = "refresh-token"
+        doThrow(
+            UnAuthorizedException(
+                code = ErrorCode.EXPIRED_TOKEN,
+                message = ErrorCode.EXPIRED_TOKEN.koreanMessage
+            )
+        ).`when`(tokenProvider).validateToken(token = dummyRefreshToken)
+
+        // when & then
+        assertThatThrownBy { authService.reissue(refreshToken = dummyRefreshToken) }
+            .isInstanceOf(UnAuthorizedException::class.java)
+            .hasMessage(ErrorCode.EXPIRED_TOKEN.koreanMessage)
+    }
+
+    @Test
     fun `토큰 갱신 시 저장되지 않은 토큰 이슈`() {
         // given
         val dummyRefreshToken = "refresh-token"
-        `when`(tokenProvider.validateToken(token = dummyRefreshToken)).thenReturn(true)
+        doNothing().`when`(tokenProvider).validateToken(token = dummyRefreshToken)
         `when`(cacheRepository.findUserIdByRefreshToken(refreshToken = dummyRefreshToken)).thenReturn(null)
 
         // when & then
@@ -219,15 +242,47 @@ class AuthServiceTest {
     fun `로그아웃`() {
         // given
         val dummyRefreshToken = "refresh-token"
-        `when`(tokenProvider.validateToken(token = dummyRefreshToken)).thenReturn(true)
-        doNothing().`when`(cacheRepository).deleteRefreshToken(
-            refreshToken = dummyRefreshToken
-        )
+        doNothing().`when`(tokenProvider).validateToken(token = dummyRefreshToken)
+        doNothing().`when`(cacheRepository).deleteRefreshToken(refreshToken = dummyRefreshToken)
 
         // when
         val result: Boolean = authService.logout(refreshToken = dummyRefreshToken)
 
         // then
         assertThat(result).isTrue
+    }
+
+    @Test
+    fun `로그아웃 시 위변조된 토큰으로 예외 발생`() {
+        // given
+        val dummyRefreshToken = "refresh-token"
+        doThrow(
+            UnAuthorizedException(
+                code = ErrorCode.INVALID_TOKEN,
+                message = ErrorCode.INVALID_TOKEN.koreanMessage
+            )
+        ).`when`(tokenProvider).validateToken(token = dummyRefreshToken)
+
+        // when & then
+        assertThatThrownBy { authService.logout(refreshToken = dummyRefreshToken) }
+            .isInstanceOf(UnAuthorizedException::class.java)
+            .hasMessage(ErrorCode.INVALID_TOKEN.koreanMessage)
+    }
+
+    @Test
+    fun `로그아웃 시 만료된 토큰으로 예외 발생`() {
+        // given
+        val dummyRefreshToken = "refresh-token"
+        doThrow(
+            UnAuthorizedException(
+                code = ErrorCode.EXPIRED_TOKEN,
+                message = ErrorCode.EXPIRED_TOKEN.koreanMessage
+            )
+        ).`when`(tokenProvider).validateToken(token = dummyRefreshToken)
+
+        // when & then
+        assertThatThrownBy { authService.logout(refreshToken = dummyRefreshToken) }
+            .isInstanceOf(UnAuthorizedException::class.java)
+            .hasMessage(ErrorCode.EXPIRED_TOKEN.koreanMessage)
     }
 }

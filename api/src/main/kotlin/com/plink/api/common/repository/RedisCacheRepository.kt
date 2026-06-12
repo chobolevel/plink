@@ -4,6 +4,7 @@ import com.plink.core.common.property.JwtProperties
 import com.plink.core.common.repository.CacheRepository
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.stereotype.Repository
+import java.util.concurrent.TimeUnit
 
 @Repository
 class RedisCacheRepository(
@@ -11,27 +12,32 @@ class RedisCacheRepository(
     private val redisTemplate: RedisTemplate<String, String>
 ) : CacheRepository {
 
-    // TODO add TTL
-
-    private val opsForHash = redisTemplate.opsForHash<String, String>()
+    private val opsForValue = redisTemplate.opsForValue()
 
     override fun saveRefreshToken(userId: String, refreshToken: String) {
-        opsForHash.put(jwtProperties.cacheKey, refreshToken, userId)
+        opsForValue.set(
+            refreshTokenKey(refreshToken),
+            userId,
+            jwtProperties.refreshTokenExpirySeconds,
+            TimeUnit.SECONDS
+        )
     }
 
     override fun findUserIdByRefreshToken(refreshToken: String): String? {
-        return opsForHash.get(jwtProperties.cacheKey, refreshToken)
+        return opsForValue.get(refreshTokenKey(refreshToken))
     }
 
     override fun deleteRefreshToken(refreshToken: String) {
-        opsForHash.delete(jwtProperties.cacheKey, refreshToken)
+        redisTemplate.delete(refreshTokenKey(refreshToken))
     }
 
     override fun set(key: String, value: String, duration: Long) {
-        redisTemplate.opsForValue().set(key, value, duration)
+        opsForValue.set(key, value, duration)
     }
 
     override fun get(key: String): String? {
-        return redisTemplate.opsForValue().get(key)
+        return opsForValue.get(key)
     }
+
+    private fun refreshTokenKey(refreshToken: String): String = "${jwtProperties.cacheKey}:$refreshToken"
 }

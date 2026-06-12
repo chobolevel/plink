@@ -77,13 +77,7 @@ class AuthService(
 
     @Transactional(readOnly = true)
     fun reissue(refreshToken: String): JwtResponse {
-        val isValidRefreshToken: Boolean = tokenProvider.validateToken(token = refreshToken)
-        if (!isValidRefreshToken) {
-            throw UnAuthorizedException(
-                code = ErrorCode.INVALID_TOKEN,
-                message = ErrorCode.INVALID_TOKEN.koreanMessage
-            )
-        }
+        tokenProvider.validateToken(token = refreshToken)
         val userId: String = cacheRepository.findUserIdByRefreshToken(refreshToken = refreshToken) ?: throw UnAuthorizedException(
             code = ErrorCode.INVALID_TOKEN,
             message = ErrorCode.INVALID_TOKEN.koreanMessage
@@ -99,13 +93,7 @@ class AuthService(
     }
 
     fun logout(refreshToken: String): Boolean {
-        val isValidRefreshToken: Boolean = tokenProvider.validateToken(token = refreshToken)
-        if (!isValidRefreshToken) {
-            throw UnAuthorizedException(
-                code = ErrorCode.INVALID_TOKEN,
-                message = ErrorCode.INVALID_TOKEN.koreanMessage
-            )
-        }
+        tokenProvider.validateToken(token = refreshToken)
         cacheRepository.deleteRefreshToken(refreshToken = refreshToken)
         return true
     }
