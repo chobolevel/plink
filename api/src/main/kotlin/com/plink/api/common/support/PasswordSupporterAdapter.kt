@@ -8,8 +8,8 @@ class PasswordSupporterAdapter(
     private val passwordEncoder: BCryptPasswordEncoder
 ) : PasswordSupporter {
 
-    override fun encode(password: String) {
-        passwordEncoder.encode(password)
+    override fun encode(password: String): String {
+        return passwordEncoder.encode(password)
     }
 
     override fun matches(password: String, encodedPassword: String): Boolean {

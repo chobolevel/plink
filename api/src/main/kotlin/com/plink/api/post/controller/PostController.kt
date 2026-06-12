@@ -63,7 +63,8 @@ class PostController(
     fun getPosts(searchRequest: SearchPostRequest, pagingRequest: PagingRequest): ResponseEntity<ApiPagingResponse> {
         val queryFilter = PostQueryFilter(
             userId = searchRequest.userId,
-            title = searchRequest.title
+            title = searchRequest.title,
+            isDeleted = searchRequest.isDeleted,
         )
         val paging = Paging(
             page = pagingRequest.page ?: 1,
