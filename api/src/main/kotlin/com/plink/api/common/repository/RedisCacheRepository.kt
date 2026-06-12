@@ -11,6 +11,8 @@ class RedisCacheRepository(
     private val redisTemplate: RedisTemplate<String, String>
 ) : CacheRepository {
 
+    // TODO add TTL
+
     private val opsForHash = redisTemplate.opsForHash<String, String>()
 
     override fun saveRefreshToken(userId: String, refreshToken: String) {

@@ -24,7 +24,8 @@ class SecurityConfig(
     @Bean
     fun corsConfigurationSource(): UrlBasedCorsConfigurationSource {
         val configuration = CorsConfiguration()
-        configuration.allowedOrigins = listOf("*")
+        // TODO 임시 조치 반영되면 안됨
+        configuration.allowedOrigins = listOf("http://localhost:3000")
         configuration.allowedMethods = listOf("POST", "GET", "PUT", "PATCH", "DELETE", "OPTIONS")
         configuration.allowedHeaders =
             listOf(

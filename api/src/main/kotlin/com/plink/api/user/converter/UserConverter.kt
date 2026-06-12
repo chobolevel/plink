@@ -1,5 +1,6 @@
 package com.plink.api.user.converter
 
+import com.plink.api.common.support.PasswordSupporter
 import com.plink.api.user.dto.CreateSocialUserRequest
 import com.plink.api.user.dto.CreateUserRequest
 import com.plink.api.user.dto.UserResponse
@@ -7,18 +8,17 @@ import com.plink.core.common.extension.toMillis
 import com.plink.core.user.entity.User
 import com.plink.core.user.vo.UserRoleType
 import com.plink.core.user.vo.UserSignUpType
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Component
 
 @Component
 class UserConverter(
-    private val passwordEncoder: BCryptPasswordEncoder
+    private val passwordSupporter: PasswordSupporter
 ) {
 
     fun toEntity(request: CreateUserRequest): User {
         return User(
             email = request.email,
-            password = passwordEncoder.encode(request.password),
+            password = passwordSupporter.encode(request.password),
             signUpType = UserSignUpType.COMMON,
             nickname = request.nickname,
             role = UserRoleType.USER,

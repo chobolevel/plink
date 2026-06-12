@@ -5,14 +5,15 @@ import com.querydsl.core.types.dsl.BooleanExpression
 
 data class PostQueryFilter(
     private val userId: String?,
-    private val title: String?
+    private val title: String?,
+    private val isDeleted: Boolean?
 ) {
 
     fun toBooleanExpressions(): Array<BooleanExpression> {
         return listOfNotNull(
             userId?.let { post.user.id.eq(it) },
             title?.let { post.title.contains(it) },
-            post.isDeleted.isFalse
+            isDeleted?.let { post.isDeleted.eq(it) }
         ).toTypedArray()
     }
 }

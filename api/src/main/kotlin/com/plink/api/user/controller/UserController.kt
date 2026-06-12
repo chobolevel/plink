@@ -1,6 +1,6 @@
 package com.plink.api.user.controller
 
-import com.plink.api.common.annotation.Everyone
+import com.plink.api.common.annotation.Authenticated
 import com.plink.api.common.annotation.UserOnly
 import com.plink.api.user.dto.CreateSocialUserRequest
 import com.plink.api.user.dto.CreateUserRequest
@@ -48,7 +48,7 @@ class UserController(
         return ResponseEntity.ok(ApiResponse.of(data = result))
     }
 
-    @Everyone
+    @Authenticated
     @Operation(summary = "회원 정보 조회 API(본인)")
     @GetMapping("/user/me")
     fun getMe(principal: Principal): ResponseEntity<ApiResponse> {

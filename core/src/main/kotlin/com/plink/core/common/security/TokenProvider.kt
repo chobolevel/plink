@@ -58,6 +58,7 @@ class TokenProvider(
     }
 
     fun validateToken(token: String): Boolean {
+        // TODO 토큰의 위변조 검사가 발생하지 않음(만료와 위변조는 다른 응답)
         return runCatching { getClaims(token = token) }.isSuccess
     }
 

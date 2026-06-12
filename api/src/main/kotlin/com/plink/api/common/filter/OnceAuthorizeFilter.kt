@@ -25,6 +25,7 @@ class OnceAuthorizeFilter(
 
         if (token != null && tokenProvider.validateToken(token = token)) {
             val userId: String = tokenProvider.getUserId(token = token)
+            // TODO DB 조회하면 stateless 장점이 없음 굳이 조회가 필요하다면 캐싱
             val user: User = userRepository.findById(id = userId)
             val authentication: UsernamePasswordAuthenticationToken = getAuthentication(user = user)
             SecurityContextHolder.getContext().authentication = authentication
