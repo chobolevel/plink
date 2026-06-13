@@ -1,6 +1,7 @@
 package com.plink.api.common.advice
 
 import com.plink.core.common.dto.ErrorResponse
+import com.plink.core.common.exception.BadCredentialException
 import com.plink.core.common.exception.ErrorCode
 import com.plink.core.common.exception.ForbiddenException
 import com.plink.core.common.exception.InvalidParameterException
@@ -16,9 +17,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.security.access.AccessDeniedException as SecurityAccessDeniedException
 
 @RestControllerAdvice
-class CustomControllerAdvice {
+class GlobalExceptionHandler {
 
-    private val log = LoggerFactory.getLogger(CustomControllerAdvice::class.java)
+    private val log = LoggerFactory.getLogger(GlobalExceptionHandler::class.java)
 
     @ExceptionHandler(SecurityAccessDeniedException::class)
     fun accessDeniedExceptionHandler(e: SecurityAccessDeniedException): ResponseEntity<ErrorResponse> {
@@ -78,6 +79,16 @@ class CustomControllerAdvice {
             ErrorResponse.of(
                 code = ErrorCode.FORBIDDEN,
                 message = ErrorCode.FORBIDDEN.koreanMessage
+            )
+        )
+    }
+
+    @ExceptionHandler(BadCredentialException::class)
+    fun badCredentialExceptionHandler(e: BadCredentialException): ResponseEntity<ErrorResponse> {
+        return ResponseEntity.badRequest().body(
+            ErrorResponse.of(
+                code = ErrorCode.BAD_CREDENTIAL,
+                message = e.message
             )
         )
     }
