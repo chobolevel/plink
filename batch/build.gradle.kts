@@ -16,6 +16,7 @@ dependencies {
 }
 
 tasks {
-    bootJar { enabled = true }
-    jar { enabled = false }
+    // 소스 구현 전까지 bootJar 비활성화
+    bootJar { enabled = false }
+    jar { enabled = true }
 }

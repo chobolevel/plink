@@ -1,4 +1,4 @@
-package com.plink.core.common.repository
+package com.plink.api.common.repository
 
 interface CacheRepository {
     fun saveRefreshToken(userId: String, refreshToken: String)

@@ -1,7 +1,6 @@
 package com.plink.api.common.repository
 
 import com.plink.core.common.property.JwtProperties
-import com.plink.core.common.repository.CacheRepository
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.stereotype.Repository
 import java.util.concurrent.TimeUnit

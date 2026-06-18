@@ -1,10 +1,17 @@
+val springBootVersion: String by project
+
 plugins {
     kotlin("jvm")
-    kotlin("plugin.spring") // @Service, @Transactional 등을 위해 필수
-    kotlin("plugin.jpa") // @Entity 등을 위해 필수
+    kotlin("plugin.spring")
+    kotlin("plugin.jpa")
     kotlin("kapt")
-    id("org.springframework.boot") // 라이브러리 구체적인 버전 결정
-    id("io.spring.dependency-management") // 의존성 관리
+    id("io.spring.dependency-management") // spring-boot 없이 BOM으로 버전만 관리
+}
+
+dependencyManagement {
+    imports {
+        mavenBom("org.springframework.boot:spring-boot-dependencies:$springBootVersion")
+    }
 }
 
 dependencies {
@@ -31,9 +38,4 @@ allOpen {
     annotation("jakarta.persistence.Entity")
     annotation("jakarta.persistence.MappedSuperclass")
     annotation("jakarta.persistence.Embeddable")
-}
-
-tasks {
-    bootJar { enabled = false }
-    jar { enabled = true }
 }

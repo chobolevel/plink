@@ -1,5 +1,10 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
+val kotlinVersion: String by project
+val springBootVersion: String by project
+val springDependencyManagementVersion: String by project
+val ktlintVersion: String by project
+
 plugins {
     val kotlinVersion = "1.9.22"
     val springBootVersion = "3.5.5"
@@ -12,7 +17,6 @@ plugins {
     id("org.springframework.boot") version springBootVersion apply false
     id("io.spring.dependency-management") version springDependencyManagementVersion apply false
     id("org.jlleitschuh.gradle.ktlint") version ktlintVersion apply false
-    // apply false = 루트에서 플러그인 선언만 하고 실제 적용은 서브 모듈의 build.gradle.kts에서 결정
 }
 
 allprojects {
@@ -27,9 +31,7 @@ allprojects {
 }
 
 subprojects {
-    apply(plugin = "kotlin")
-    apply(plugin = "kotlin-spring")
-
+    // kotlin("jvm")과 kotlin("plugin.spring")은 각 모듈 plugins {} 블록에서 선언
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
         compilerOptions {
             freeCompilerArgs.set(listOf("-Xjsr305=strict"))
